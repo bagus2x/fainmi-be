@@ -63,18 +63,19 @@ CREATE TABLE link(
     display BOOLEAN NOT NULL,
     created_at INT NOT NULL,
     updated_at INT NOT NULL,
-    PRIMARY KEY(link_id, profile_id),
+    PRIMARY KEY(link_id),
     CONSTRAINT fk_link_profile FOREIGN KEY(profile_id) REFERENCES profile(profile_id)
     ON DELETE CASCADE
 );
 
+CREATE INDEX idx_profile_id ON link (profile_id);
+
 CREATE TABLE "like"(
     link_id INT NOT NULL,
-    owner_id INT NOT NULL,
     liker_id INT NOT NULL,
     created_at INT NOT NULL,
-    PRIMARY KEY(link_id, owner_id, liker_id),
-    CONSTRAINT fk_likes_link FOREIGN KEY(link_id, owner_id) REFERENCES link(link_id, profile_id)
+    PRIMARY KEY(link_id, liker_id),
+    CONSTRAINT fk_likes_link FOREIGN KEY(link_id) REFERENCES link(link_id)
     ON DELETE CASCADE,
     CONSTRAINT fk_likes_liker FOREIGN KEY(liker_id) REFERENCES profile(profile_id)
     ON DELETE CASCADE

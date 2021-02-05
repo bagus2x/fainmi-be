@@ -13,7 +13,7 @@ func getService() Service {
 
 func TestServiceAddBackground(t *testing.T) {
 	s := getService()
-	err := s.AddBackground(&models.CreateBackgroundReq{
+	err := s.AddBackground(&models.CreateBackgroundRequest{
 		Name:        "ijo",
 		Description: "ijo",
 	})
@@ -28,9 +28,17 @@ func TestServiceGetBackground(t *testing.T) {
 	assert.NotNil(t, bg)
 }
 
+func TestServiceGetBackgrounds(t *testing.T) {
+	s := getService()
+	bg, err := s.GetBackgrounds()
+	t.Log(len(bg))
+	assert.NoError(t, err)
+	assert.NotNil(t, bg)
+}
+
 func TestServiceUpdateBackground(t *testing.T) {
 	s := getService()
-	err := s.UpdateBackground(1, &models.UpdateBackgroundReq{
+	err := s.UpdateBackground(1, &models.UpdateBackgroundRequest{
 		Name:        "Dark",
 		Description: "Kegelapan dunia",
 	})

@@ -11,9 +11,10 @@ import (
 
 // Service -
 type Service interface {
-	AddButton(req *models.CreateButtonReq) error
-	GetButton(buttonID int) (*models.GetButtonRes, error)
-	UpdateButton(buttonID int, req *models.UpdateButtonReq) error
+	AddButton(req *models.CreateButtonRequest) error
+	GetButton(buttonID int) (*models.GetButtonResponse, error)
+	GetButtons() (models.GetButtonsResponse, error)
+	UpdateButton(buttonID int, req *models.UpdateButtonRequest) error
 	DeleteButton(buttonID int) error
 }
 
@@ -26,7 +27,7 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s service) AddButton(req *models.CreateButtonReq) error {
+func (s service) AddButton(req *models.CreateButtonRequest) error {
 	button := &entities.Button{
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
@@ -41,13 +42,13 @@ func (s service) AddButton(req *models.CreateButtonReq) error {
 	return nil
 }
 
-func (s service) GetButton(buttonID int) (*models.GetButtonRes, error) {
+func (s service) GetButton(buttonID int) (*models.GetButtonResponse, error) {
 	button, err := s.repo.Read(buttonID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 
-	res := &models.GetButtonRes{
+	res := &models.GetButtonResponse{
 		ButtonID:    button.ButtonID,
 		Name:        button.Name,
 		Description: button.Description.String,
@@ -58,7 +59,28 @@ func (s service) GetButton(buttonID int) (*models.GetButtonRes, error) {
 	return res, nil
 }
 
-func (s service) UpdateButton(buttonID int, req *models.UpdateButtonReq) error {
+func (s service) GetButtons() (models.GetButtonsResponse, error) {
+	buttons, err := s.repo.ReadAll()
+	if err != nil {
+		return nil, errors.ErrDatabase(err)
+	}
+
+	res := make(models.GetButtonsResponse, 0)
+	for _, button := range buttons {
+		var btn = models.GetButtonResponse{
+			ButtonID:    button.ButtonID,
+			Name:        button.Name,
+			Description: button.Description.String,
+			CreatedAt:   button.CreatedAt,
+			UpdatedAt:   button.UpdatedAt,
+		}
+		res = append(res, &btn)
+	}
+
+	return res, nil
+}
+
+func (s service) UpdateButton(buttonID int, req *models.UpdateButtonRequest) error {
 	button := &entities.Button{
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Name != "", String: req.Name},

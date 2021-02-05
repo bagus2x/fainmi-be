@@ -36,11 +36,20 @@ func TestRepoCreate(t *testing.T) {
 
 func TestRepoRead(t *testing.T) {
 	repo := NewRepo(db())
-	bg, err := repo.Read(100) // not found
+	bg, err := repo.Read(100)
 	t.Log(bg)
 	t.Log(err)
 	assert.Nil(t, bg)
 	assert.Error(t, err)
+}
+
+func TestRepoReadAll(t *testing.T) {
+	repo := NewRepo(db())
+	bg, err := repo.ReadAll()
+	t.Log(bg)
+	t.Log(err)
+	assert.NotNil(t, bg)
+	assert.NoError(t, err)
 }
 
 func TestRepoUpdate(t *testing.T) {

@@ -2,16 +2,16 @@ package models
 
 import "github.com/bagus2x/fainmi-be/pkg/entities"
 
-// CreateLinkReq create link request
-type CreateLinkReq struct {
+// CreateLinkRequest create link request
+type CreateLinkRequest struct {
 	Order   int    `json:"order"`
 	Title   string `json:"title"`
 	URL     string `json:"url"`
 	Display bool   `json:"display"`
 }
 
-// CreateLinkRes create link resposne
-type CreateLinkRes struct {
+// CreateLinkResponse create link resposne
+type CreateLinkResponse struct {
 	LinkID  int    `json:"linkID"`
 	Order   int    `json:"order"`
 	Title   string `json:"title"`
@@ -19,8 +19,8 @@ type CreateLinkRes struct {
 	Display bool   `json:"display"`
 }
 
-// GetLinkRes get link response
-type GetLinkRes struct {
+// GetLinkResponse get link response
+type GetLinkResponse struct {
 	LinkID    int    `json:"linkID"`
 	ProfileID int    `json:"profileID"`
 	Order     int    `json:"order"`
@@ -32,15 +32,10 @@ type GetLinkRes struct {
 }
 
 // GetLinksRes get links repsonse
-type GetLinksRes []*GetLinkRes
+type GetLinksRes []*GetLinkResponse
 
 // LinkUpdateReq link update request
-type LinkUpdateReq struct {
-	Order   int    `json:"order"`
-	Title   string `json:"title"`
-	URL     string `json:"url"`
-	Display bool   `json:"display"`
-}
+type LinkUpdateReq CreateLinkRequest
 
-// Orders equest struct & response struct
-type Orders []*entities.Order
+// LinksOrder equest struct & response struct
+type LinksOrder []*entities.Order

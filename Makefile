@@ -3,7 +3,9 @@
 include .env
 
 dev:
-	go run api/main.go
+	go run api/app.go
+build:
+	go build -o bin/app api/app.go
 adminer:
 	docker run --rm -ti --network host adminer
 postgres:

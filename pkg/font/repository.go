@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	Create(font *entities.Font) error
 	Read(fontID int) (*entities.Font, error)
+	ReadAll() ([]*entities.Font, error)
 	Update(fontID int, font *entities.Font) (bool, error)
 	Delete(fontID int) (bool, error)
 }
@@ -47,6 +48,27 @@ func (r repository) Read(fontID int) (*entities.Font, error) {
 	}
 
 	return &font, err
+}
+
+func (r repository) ReadAll() ([]*entities.Font, error) {
+	rows, err := r.db.Query(`SELECT * FROM font`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	fonts := make([]*entities.Font, 0)
+
+	for rows.Next() {
+		var font entities.Font
+		err := rows.Scan(&font.FontID, &font.Name, &font.Description, &font.UpdatedAt, &font.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		fonts = append(fonts, &font)
+	}
+
+	return fonts, nil
 }
 
 func (r repository) Update(fontID int, font *entities.Font) (bool, error) {

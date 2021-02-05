@@ -13,7 +13,7 @@ func getService() Service {
 
 func TestServiceAddFont(t *testing.T) {
 	s := getService()
-	err := s.AddFont(&models.CreateFontReq{
+	err := s.AddFont(&models.CreateFontRequest{
 		Name:        "miring",
 		Description: "mirng ke kanan",
 	})
@@ -28,9 +28,17 @@ func TestServiceGetFont(t *testing.T) {
 	assert.NotNil(t, bg)
 }
 
+func TestServiceGetFonts(t *testing.T) {
+	s := getService()
+	fnt, err := s.GetFonts()
+	t.Log(len(fnt))
+	assert.NoError(t, err)
+	assert.NotNil(t, fnt)
+}
+
 func TestServiceUpdateFont(t *testing.T) {
 	s := getService()
-	err := s.UpdateFont(1, &models.UpdateFontReq{
+	err := s.UpdateFont(1, &models.UpdateFontRequest{
 		Name:        "Font gelap",
 		Description: "Kegelapan dunia",
 	})

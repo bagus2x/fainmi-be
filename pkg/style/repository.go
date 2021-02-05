@@ -10,9 +10,9 @@ import (
 type Repository interface {
 	Create(style *entities.Style) error
 	Read(profileID int) (*entities.Style, error)
+	ReadStyleDetail(profileID string) (*entities.StyleDetail, error)
 	Update(profileID int, style *entities.Style) (bool, error)
 	Delete(profileID int) (bool, error)
-	ReadStyleDetail(profileID int) (*entities.StyleDetail, error)
 }
 
 type repository struct {
@@ -54,6 +54,27 @@ func (r repository) Read(profileID int) (*entities.Style, error) {
 	return &style, err
 }
 
+// ReadStyleDetail -
+func (r repository) ReadStyleDetail(username string) (*entities.StyleDetail, error) {
+	q := `SELECT profile_id, bgn.name as background, btn.name as button, fnt.name as font FROM style stl
+		  LEFT JOIN background bgn USING(background_id)
+		  LEFT JOIN button btn USING(button_id)
+		  LEFT JOIN font fnt USING(font_id)
+		  WHERE profile_id=(SELECT profile_id FROM profile WHERE username=$1)`
+	var styleDetail entities.StyleDetail
+	err := r.db.QueryRow(q, username).Scan(
+		&styleDetail.ProfileID,
+		&styleDetail.Background,
+		&styleDetail.Button,
+		&styleDetail.Font,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &styleDetail, nil
+}
+
 func (r repository) Update(profileID int, style *entities.Style) (bool, error) {
 	q := `UPDATE style SET background_id=$1, button_id=$2, font_id=$3, updated_at=$4 WHERE profile_id=$5`
 	res, err := r.db.Exec(
@@ -86,26 +107,4 @@ func (r repository) Delete(profileID int) (bool, error) {
 	}
 
 	return rowsAffected > 0, nil
-}
-
-// ReadStyleDetail -
-func (r repository) ReadStyleDetail(profileID int) (*entities.StyleDetail, error) {
-	q := `SELECT profile_id, bgn.name as background, btn.name as button, fnt.name as font FROM style stl
-		LEFT JOIN background bgn USING(background_id)
-		LEFT JOIN button btn USING(button_id)
-		LEFT JOIN font fnt USING(font_id)
-		WHERE profile_id=$1
-	`
-	var styleDetail entities.StyleDetail
-	err := r.db.QueryRow(q, profileID).Scan(
-		&styleDetail.ProfileID,
-		&styleDetail.Background,
-		&styleDetail.Button,
-		&styleDetail.Font,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return &styleDetail, nil
 }

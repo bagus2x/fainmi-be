@@ -1,13 +1,13 @@
 package models
 
-// CreateBackgroundReq -
-type CreateBackgroundReq struct {
+// CreateBackgroundRequest -
+type CreateBackgroundRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-// GetBackgroundRes -
-type GetBackgroundRes struct {
+// GetBackgroundResponse -
+type GetBackgroundResponse struct {
 	BackgroundID int    `json:"backgroundID"`
 	Name         string `json:"name"`
 	Description  string `json:"description"`
@@ -15,5 +15,8 @@ type GetBackgroundRes struct {
 	UpdatedAt    int64  `json:"updatedAt"`
 }
 
-// UpdateBackgroundReq -
-type UpdateBackgroundReq CreateBackgroundReq
+// GetBackgroundsResponse -
+type GetBackgroundsResponse []*GetBackgroundResponse
+
+// UpdateBackgroundRequest -
+type UpdateBackgroundRequest CreateBackgroundRequest

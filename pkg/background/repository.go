@@ -12,6 +12,7 @@ type Repository interface {
 	Read(backgroundID int) (*entities.Background, error)
 	Update(backgroundID int, background *entities.Background) (bool, error)
 	Delete(backgroundID int) (bool, error)
+	ReadAll() ([]*entities.Background, error)
 }
 
 type repository struct {
@@ -33,6 +34,7 @@ func (r repository) Create(background *entities.Background) error {
 
 	return err
 }
+
 func (r repository) Read(backgroundID int) (*entities.Background, error) {
 	var background entities.Background
 	err := r.db.QueryRow(`SELECT * FROM background WHERE background_id=$1`, backgroundID).Scan(
@@ -47,6 +49,27 @@ func (r repository) Read(backgroundID int) (*entities.Background, error) {
 	}
 
 	return &background, err
+}
+
+func (r repository) ReadAll() ([]*entities.Background, error) {
+	rows, err := r.db.Query(`SELECT * FROM background`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	backgrounds := make([]*entities.Background, 0)
+
+	for rows.Next() {
+		var bg entities.Background
+		err := rows.Scan(&bg.BackgroundID, &bg.Name, &bg.Description, &bg.UpdatedAt, &bg.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		backgrounds = append(backgrounds, &bg)
+	}
+
+	return backgrounds, nil
 }
 
 func (r repository) Update(backgroundID int, background *entities.Background) (bool, error) {

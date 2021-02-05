@@ -24,7 +24,6 @@ func db() *sql.DB {
 var f = entities.Like{
 	LinkID:    10,
 	LikerID:   2,
-	OwnerID:   1,
 	CreatedAt: time.Now().Unix(),
 }
 

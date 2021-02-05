@@ -43,6 +43,15 @@ func TestRepoRead(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRepoReadAll(t *testing.T) {
+	repo := NewRepo(db())
+	bg, err := repo.ReadAll()
+	t.Log(bg)
+	t.Log(err)
+	assert.NotNil(t, bg)
+	assert.NoError(t, err)
+}
+
 func TestRepoUpdate(t *testing.T) {
 	repo := NewRepo(db())
 	_, err := repo.Update(2, &f)

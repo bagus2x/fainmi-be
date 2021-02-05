@@ -2,6 +2,7 @@ package link
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/bagus2x/fainmi-be/pkg/entities"
@@ -11,12 +12,13 @@ import (
 
 // Service -
 type Service interface {
-	CreateLink(profileID int, req *models.CreateLinkReq) (*models.CreateLinkRes, error)
-	GetLink(linkID int) (*models.GetLinkRes, error)
-	GetLinks(profileID int, displayAll bool) (models.GetLinksRes, error)
-	UpdateLink(profileID int, req *models.LinkUpdateReq) error
-	DeleteLink(profileID int) error
-	UpdateLinkOrder(orders models.Orders) error
+	CreateLink(profileID int, req *models.CreateLinkRequest) (*models.CreateLinkResponse, error)
+	GetLink(linkID, profileID int) (*models.GetLinkResponse, error)
+	GetLinks(profileID int) (models.GetLinksRes, error)
+	GetPublicLinks(username string) (models.GetLinksRes, error)
+	UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) error
+	UpdateLinkOrder(profileID int, order models.LinksOrder) error
+	DeleteLink(linkID, profileID int) error
 }
 
 type service struct {
@@ -28,7 +30,7 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s service) CreateLink(profileID int, req *models.CreateLinkReq) (*models.CreateLinkRes, error) {
+func (s service) CreateLink(profileID int, req *models.CreateLinkRequest) (*models.CreateLinkResponse, error) {
 	link := &entities.Link{
 		ProfileID: profileID,
 		Order:     req.Order,
@@ -42,7 +44,7 @@ func (s service) CreateLink(profileID int, req *models.CreateLinkReq) (*models.C
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
-	res := &models.CreateLinkRes{
+	res := &models.CreateLinkResponse{
 		LinkID:  link.LinkID,
 		Order:   link.Order,
 		Title:   link.Title.String,
@@ -52,13 +54,13 @@ func (s service) CreateLink(profileID int, req *models.CreateLinkReq) (*models.C
 	return res, nil
 }
 
-func (s service) GetLink(linkID int) (*models.GetLinkRes, error) {
-	link, err := s.repo.Read(linkID)
+func (s service) GetLink(linkID, profileID int) (*models.GetLinkResponse, error) {
+	link, err := s.repo.Read(linkID, profileID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 
-	res := &models.GetLinkRes{
+	res := &models.GetLinkResponse{
 		LinkID:    link.LinkID,
 		ProfileID: link.ProfileID,
 		Order:     link.Order,
@@ -72,14 +74,14 @@ func (s service) GetLink(linkID int) (*models.GetLinkRes, error) {
 	return res, nil
 }
 
-func (s service) GetLinks(profileID int, displayAll bool) (models.GetLinksRes, error) {
-	links, err := s.repo.ReadByProfileID(profileID, displayAll)
+func (s service) GetLinks(profileID int) (models.GetLinksRes, error) {
+	links, err := s.repo.ReadByProfileID(profileID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 	res := make(models.GetLinksRes, 0)
 	for _, link := range links {
-		res = append(res, &models.GetLinkRes{
+		res = append(res, &models.GetLinkResponse{
 			LinkID:    link.LinkID,
 			ProfileID: link.ProfileID,
 			Order:     link.Order,
@@ -94,7 +96,30 @@ func (s service) GetLinks(profileID int, displayAll bool) (models.GetLinksRes, e
 	return res, nil
 }
 
-func (s service) UpdateLink(profileID int, req *models.LinkUpdateReq) error {
+func (s service) GetPublicLinks(username string) (models.GetLinksRes, error) {
+	links, err := s.repo.ReadByUsername(username)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.ErrDatabase(err)
+	}
+	res := make(models.GetLinksRes, 0)
+	for _, link := range links {
+		res = append(res, &models.GetLinkResponse{
+			LinkID:    link.LinkID,
+			ProfileID: link.ProfileID,
+			Order:     link.Order,
+			Title:     link.Title.String,
+			URL:       link.URL.String,
+			Display:   link.Display,
+			CreatedAt: link.CreatedAt,
+			UpdatedAt: link.UpdatedAt,
+		})
+	}
+
+	return res, nil
+}
+
+func (s service) UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) error {
 	link := &entities.Link{
 		Order:     req.Order,
 		Title:     sql.NullString{Valid: req.Title != "", String: req.Title},
@@ -102,7 +127,7 @@ func (s service) UpdateLink(profileID int, req *models.LinkUpdateReq) error {
 		Display:   req.Display,
 		UpdatedAt: time.Now().Unix(),
 	}
-	isUpdated, err := s.repo.Update(profileID, link)
+	isUpdated, err := s.repo.Update(linkID, profileID, link)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
@@ -113,8 +138,8 @@ func (s service) UpdateLink(profileID int, req *models.LinkUpdateReq) error {
 	return nil
 }
 
-func (s service) DeleteLink(linkID int) error {
-	isDeleted, err := s.repo.Delete(linkID)
+func (s service) DeleteLink(linkID, profileID int) error {
+	isDeleted, err := s.repo.Delete(linkID, profileID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
@@ -125,8 +150,8 @@ func (s service) DeleteLink(linkID int) error {
 	return nil
 }
 
-func (s service) UpdateLinkOrder(orders models.Orders) error {
-	err := s.repo.UpdateOrder(orders)
+func (s service) UpdateLinkOrder(profileID int, orders models.LinksOrder) error {
+	err := s.repo.UpdateOrder(profileID, orders)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}

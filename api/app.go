@@ -5,16 +5,30 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/bagus2x/fainmi-be/api/middleware"
 	"github.com/bagus2x/fainmi-be/api/routes"
 	"github.com/bagus2x/fainmi-be/config"
+	"github.com/bagus2x/fainmi-be/pkg/background"
+	"github.com/bagus2x/fainmi-be/pkg/button"
+	"github.com/bagus2x/fainmi-be/pkg/font"
+	"github.com/bagus2x/fainmi-be/pkg/like"
+	"github.com/bagus2x/fainmi-be/pkg/link"
 	"github.com/bagus2x/fainmi-be/pkg/profile"
+	"github.com/bagus2x/fainmi-be/pkg/style"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load Environment variable
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Environment variable
 	port := os.Getenv("PORT")
 	databaseURI := os.Getenv("DATABASE_URI")
@@ -34,27 +48,39 @@ func main() {
 	// Database connection
 	database, err := config.DatabaseConnection(databaseURI)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	// profile layers
-	profileRepository := profile.NewRepo(database)
-	profileService := profile.NewService(profileRepository, accessTokenKey)
-	routes.Profile(app, profileService)
+	// Repository
+	profileRepo := profile.NewRepo(database)
+	styleRepo := style.NewRepo(database)
+	linkRepo := link.NewRepo(database)
+	likeRepo := like.NewRepo(database)
+	backgroundRepo := background.NewRepo(database)
+	buttonRepo := button.NewRepo(database)
+	fontRepo := font.NewRepo(database)
 
-	//
+	// Service
+	profileService := profile.NewService(profileRepo, accessTokenKey)
+	styleService := style.NewService(styleRepo)
+	linkService := link.NewService(linkRepo)
+	likeService := like.NewService(likeRepo)
+	backgroundService := background.NewService(backgroundRepo)
+	buttonService := button.NewService(buttonRepo)
+	fontService := font.NewService(fontRepo)
 
-	//
+	// Middleware
+	auth := middleware.NewAuth(profileService)
 
-	//
-
-	//
-
-	//
-
-	//
-
-	//
+	// Routes/Controller
+	routes.Test(app, auth)
+	routes.Profile(app, profileService, auth)
+	routes.Style(app, styleService, auth)
+	routes.Link(app, linkService, auth)
+	routes.Like(app, likeService, auth)
+	routes.Background(app, backgroundService)
+	routes.Button(app, buttonService)
+	routes.Font(app, fontService)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)

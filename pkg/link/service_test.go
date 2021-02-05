@@ -13,9 +13,9 @@ func getService() Service {
 
 func TestServiceCreateLink(t *testing.T) {
 	s := getService()
-	res, err := s.CreateLink(1, &models.CreateLinkReq{
+	res, err := s.CreateLink(1, &models.CreateLinkRequest{
 		Title:   "my one",
-		URL:     "one.com/bagus",
+		URL:     "one.com/jaenab",
 		Display: true,
 		Order:   4,
 	})
@@ -25,27 +25,28 @@ func TestServiceCreateLink(t *testing.T) {
 
 func TestServiceDeleteLink(t *testing.T) {
 	s := getService()
-	err := s.DeleteLink(2)
+	err := s.DeleteLink(2, 1)
 	assert.NoError(t, err)
 }
 
 func TestServiceGetLink(t *testing.T) {
 	s := getService()
-	link, err := s.GetLink(1)
+	link, err := s.GetLink(3, 1)
 	assert.NoError(t, err)
 	assert.NotNil(t, link)
 }
 
 func TestServiceGetLinks(t *testing.T) {
 	s := getService()
-	link, err := s.GetLinks(1, false)
+	link, err := s.GetLinks(1)
+	t.Log(link)
 	assert.NoError(t, err)
 	assert.NotNil(t, link)
 }
 
 func TestServiceUpdateLink(t *testing.T) {
 	s := getService()
-	err := s.UpdateLink(1, &models.LinkUpdateReq{
+	err := s.UpdateLink(1, 1, &models.LinkUpdateReq{
 		Order:   1009,
 		Display: false,
 		Title:   "my fb",
@@ -56,6 +57,6 @@ func TestServiceUpdateLink(t *testing.T) {
 
 func TestServiceUpdateLinkOrder(t *testing.T) {
 	s := getService()
-	err := s.UpdateLinkOrder(models.Orders{{LinkID: 1, Order: 1}})
+	err := s.UpdateLinkOrder(1, models.LinksOrder{{LinkID: 3, Order: 100}})
 	assert.NoError(t, err)
 }

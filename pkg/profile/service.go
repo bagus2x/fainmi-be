@@ -16,12 +16,12 @@ import (
 
 // Service interface to access the user repository
 type Service interface {
-	SignUp(req *models.SignUpReq) (*models.SignUpRes, error)
-	SignIn(req *models.SignInReq) (*models.SignInRes, error)
-	UpdateProfile(profileID int, req *models.ProfileUpdateReq) (*models.ProfileUpdateRes, error)
+	SignUp(req *models.SignUpRequest) (*models.SignUpResponse, error)
+	SignIn(req *models.SignInRequest) (*models.SignInResponse, error)
+	UpdateProfile(profileID int, req *models.ProfileUpdateRequest) (*models.ProfileUpdateResponse, error)
 	DeleteProfile(profileID int) error
 	CreateAccessToken(profileID int) (string, error)
-	ParseAccessToken(token string) (string, error)
+	ParseAccessToken(token string) (*models.AccessClaims, error)
 }
 
 type service struct {
@@ -34,7 +34,7 @@ func NewService(repo Repository, accessTokenKey string) Service {
 	return &service{repo: repo, accessTokenKey: accessTokenKey}
 }
 
-func (s service) SignUp(req *models.SignUpReq) (*models.SignUpRes, error) {
+func (s service) SignUp(req *models.SignUpRequest) (*models.SignUpResponse, error) {
 	err := validator.New().Struct(req)
 	if err != nil {
 		return nil, errors.ErrorMessage(errors.ErrBadRequest, err.Error())
@@ -72,7 +72,7 @@ func (s service) SignUp(req *models.SignUpReq) (*models.SignUpRes, error) {
 		return nil, err
 	}
 
-	res := &models.SignUpRes{
+	res := &models.SignUpResponse{
 		ProfileID:   profile.ProfileID,
 		Email:       profile.Email,
 		Username:    profile.Username,
@@ -82,7 +82,7 @@ func (s service) SignUp(req *models.SignUpReq) (*models.SignUpRes, error) {
 	return res, nil
 }
 
-func (s service) SignIn(req *models.SignInReq) (*models.SignInRes, error) {
+func (s service) SignIn(req *models.SignInRequest) (*models.SignInResponse, error) {
 	err := validator.New().Struct(req)
 	if err != nil {
 		return nil, errors.ErrorMessage(errors.ErrBadRequest, err.Error())
@@ -103,7 +103,7 @@ func (s service) SignIn(req *models.SignInReq) (*models.SignInRes, error) {
 		return nil, err
 	}
 
-	res := &models.SignInRes{
+	res := &models.SignInResponse{
 		ProfileID:   profile.ProfileID,
 		Email:       profile.Email,
 		Username:    profile.Username,
@@ -114,7 +114,7 @@ func (s service) SignIn(req *models.SignInReq) (*models.SignInRes, error) {
 	return res, nil
 }
 
-func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateReq) (*models.ProfileUpdateRes, error) {
+func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateRequest) (*models.ProfileUpdateResponse, error) {
 	err := validator.New().Struct(req)
 	if err != nil {
 		return nil, errors.ErrorMessage(errors.ErrBadRequest, err.Error())
@@ -139,13 +139,13 @@ func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateReq) (*mo
 
 	isUpdated, err := s.repo.Update(profileID, profile)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, errors.ErrDatabase(err)
 	}
 	if !isUpdated {
 		return nil, errors.ErrUserNotFound
 	}
 
-	res := models.ProfileUpdateRes{
+	res := models.ProfileUpdateResponse{
 		ProfileID: profile.ProfileID,
 		Photo:     profile.Photo.String,
 		Username:  profile.Username,
@@ -180,7 +180,7 @@ func (s service) CreateAccessToken(profileID int) (string, error) {
 	return token.SignedString([]byte(s.accessTokenKey))
 }
 
-func (s service) ParseAccessToken(accessToken string) (string, error) {
+func (s service) ParseAccessToken(accessToken string) (*models.AccessClaims, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &models.AccessClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -190,16 +190,16 @@ func (s service) ParseAccessToken(accessToken string) (string, error) {
 
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
-			return "", errors.ErrTokenExpired
+			return nil, errors.ErrTokenExpired
 		}
-		return "", errors.ErrInvalidAccessToken
+		return nil, errors.ErrInvalidAccessToken
 	}
 
 	if claims, ok := token.Claims.(*models.AccessClaims); ok && token.Valid {
-		return claims.Subject, nil
+		return claims, nil
 	}
 
-	return "", errors.ErrInvalidAccessToken
+	return nil, errors.ErrInvalidAccessToken
 }
 
 func hashPassword(password string) (string, error) {

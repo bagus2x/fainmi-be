@@ -10,6 +10,7 @@ import (
 type Repository interface {
 	Create(button *entities.Button) error
 	Read(buttonID int) (*entities.Button, error)
+	ReadAll() ([]*entities.Button, error)
 	Update(buttonID int, button *entities.Button) (bool, error)
 	Delete(buttonID int) (bool, error)
 }
@@ -47,6 +48,27 @@ func (r repository) Read(buttonID int) (*entities.Button, error) {
 	}
 
 	return &button, err
+}
+
+func (r repository) ReadAll() ([]*entities.Button, error) {
+	rows, err := r.db.Query(`SELECT * FROM button`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	buttons := make([]*entities.Button, 0)
+
+	for rows.Next() {
+		var btn entities.Button
+		err := rows.Scan(&btn.ButtonID, &btn.Name, &btn.Description, &btn.UpdatedAt, &btn.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		buttons = append(buttons, &btn)
+	}
+
+	return buttons, nil
 }
 
 func (r repository) Update(buttonID int, button *entities.Button) (bool, error) {

@@ -43,7 +43,7 @@ func TestRepoCreate(t *testing.T) {
 
 func TestRepoRead(t *testing.T) {
 	repo := NewRepo(db())
-	bg, err := repo.Read(1)
+	bg, err := repo.Read(1, 2)
 	t.Log(bg)
 	t.Log(err)
 	assert.NotNil(t, bg)
@@ -52,7 +52,7 @@ func TestRepoRead(t *testing.T) {
 
 func TestRepoUpdate(t *testing.T) {
 	repo := NewRepo(db())
-	isUpdated, err := repo.Update(80, &f)
+	isUpdated, err := repo.Update(80, 2, &f)
 	t.Log(err)
 	assert.Condition(t, func() (success bool) {
 		return isUpdated
@@ -62,7 +62,7 @@ func TestRepoUpdate(t *testing.T) {
 
 func TestRepoDelete(t *testing.T) {
 	repo := NewRepo(db())
-	isDeleted, err := repo.Delete(3)
+	isDeleted, err := repo.Delete(3, 1)
 	t.Log(err)
 	assert.Condition(t, func() (success bool) {
 		return isDeleted
@@ -72,7 +72,7 @@ func TestRepoDelete(t *testing.T) {
 
 func TestRepoReadByProfileID(t *testing.T) {
 	repo := NewRepo(db())
-	links, err := repo.ReadByProfileID(1, false)
+	links, err := repo.ReadByProfileID(1)
 	assert.NoError(t, err)
 	assert.NotNil(t, links)
 	for _, v := range links {
@@ -105,7 +105,7 @@ func BenchmarkStringConcat(b *testing.B) {
 
 func TestRepoUpdateOrder(t *testing.T) {
 	r := NewRepo(db())
-	err := r.UpdateOrder(orders)
+	err := r.UpdateOrder(1, orders)
 	assert.NoError(t, err)
 }
 

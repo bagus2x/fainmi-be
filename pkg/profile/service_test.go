@@ -13,7 +13,7 @@ func getService() Service {
 
 func TestServiceSignUp(t *testing.T) {
 	s := getService()
-	res, err := s.SignUp(&models.SignUpReq{
+	res, err := s.SignUp(&models.SignUpRequest{
 		Email:    "jaenab@gmail.com",
 		Password: "jaenab123",
 		Username: "jaenab",
@@ -25,7 +25,7 @@ func TestServiceSignUp(t *testing.T) {
 
 func TestServiceSignIn(t *testing.T) {
 	s := getService()
-	res, err := s.SignIn(&models.SignInReq{
+	res, err := s.SignIn(&models.SignInRequest{
 		UsernameOrEmail: "bagus",
 		Password:        "bagus123",
 	})
@@ -37,7 +37,7 @@ func TestServiceSignIn(t *testing.T) {
 
 func TestServiceUpdateProfile(t *testing.T) {
 	s := getService()
-	res, err := s.UpdateProfile(1, &models.ProfileUpdateReq{
+	res, err := s.UpdateProfile(1, &models.ProfileUpdateRequest{
 		Email:    "makmur@gmail.com",
 		Password: "makmur123",
 		Username: "makmur",

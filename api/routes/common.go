@@ -3,6 +3,7 @@ package routes
 import (
 	"errors"
 
+	"github.com/bagus2x/fainmi-be/pkg/models"
 	custom "github.com/bagus2x/fainmi-be/pkg/models/errors"
 )
 
@@ -23,9 +24,4 @@ func code(err error) int {
 	return 500
 }
 
-// Web response
-type r struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
-}
+type r models.Response

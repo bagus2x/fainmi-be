@@ -1,15 +1,9 @@
 package models
 
-// AddLikeReq -
-type AddLikeReq struct {
-	LinkID  int `json:"linkID"`
-	OwnerID int `json:"ownerID"`
-}
+import "github.com/bagus2x/fainmi-be/pkg/entities"
 
-// LikeDetailRes -
-type LikeDetailRes struct {
-	LinkID    int   `json:"linkID"`
-	OwnerID   int   `json:"ownerID"`
-	LikerID   int   `json:"likerID"`
-	CreatedAt int64 `json:"createdAt"`
-}
+// LikeDetailResponse -
+type LikeDetailResponse *entities.Like
+
+// LikesDetailResponse -
+type LikesDetailResponse []*entities.Like

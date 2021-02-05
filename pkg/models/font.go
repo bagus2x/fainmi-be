@@ -1,13 +1,13 @@
 package models
 
-// CreateFontReq -
-type CreateFontReq struct {
+// CreateFontRequest -
+type CreateFontRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-// GetFontRes -
-type GetFontRes struct {
+// GetFontResponse -
+type GetFontResponse struct {
 	FontID      int    `json:"fontID"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -15,5 +15,8 @@ type GetFontRes struct {
 	UpdatedAt   int64  `json:"updatedAt"`
 }
 
-// UpdateFontReq -
-type UpdateFontReq CreateFontReq
+// GetFontsResponse -
+type GetFontsResponse []*GetFontResponse
+
+// UpdateFontRequest -
+type UpdateFontRequest CreateFontRequest

@@ -13,7 +13,7 @@ func getService() Service {
 
 func TestServiceCreateStyle(t *testing.T) {
 	s := getService()
-	err := s.CreateStyle(1, &models.StyleReq{
+	err := s.CreateStyle(1, &models.StyleRequest{
 		BackgroundID: 0,
 		ButtonID:     0,
 		FontID:       0,
@@ -32,7 +32,7 @@ func TestServiceGetStyle(t *testing.T) {
 
 func TestServiceGetStyleDetail(t *testing.T) {
 	s := getService()
-	styleDetail, err := s.GetStyleDetail(1)
+	styleDetail, err := s.GetStyleDetail("bagus")
 	assert.NoError(t, err)
 	assert.NotNil(t, styleDetail)
 	t.Log(styleDetail)
@@ -40,7 +40,7 @@ func TestServiceGetStyleDetail(t *testing.T) {
 
 func TestServiceUpdateStyle(t *testing.T) {
 	s := getService()
-	err := s.UpdateStyle(1, &models.StyleReq{
+	err := s.UpdateStyle(1, &models.StyleRequest{
 		BackgroundID: 1,
 		ButtonID:     0,
 		FontID:       0,

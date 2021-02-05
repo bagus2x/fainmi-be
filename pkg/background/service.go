@@ -11,9 +11,10 @@ import (
 
 // Service -
 type Service interface {
-	AddBackground(req *models.CreateBackgroundReq) error
-	GetBackground(BackgroundID int) (*models.GetBackgroundRes, error)
-	UpdateBackground(BackgroundID int, req *models.UpdateBackgroundReq) error
+	AddBackground(req *models.CreateBackgroundRequest) error
+	GetBackground(BackgroundID int) (*models.GetBackgroundResponse, error)
+	GetBackgrounds() (models.GetBackgroundsResponse, error)
+	UpdateBackground(BackgroundID int, req *models.UpdateBackgroundRequest) error
 	DeleteBackground(BackgroundID int) error
 }
 
@@ -26,7 +27,7 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s service) AddBackground(req *models.CreateBackgroundReq) error {
+func (s service) AddBackground(req *models.CreateBackgroundRequest) error {
 	background := &entities.Background{
 		CreatedAt:   time.Now().Unix(),
 		UpdatedAt:   time.Now().Unix(),
@@ -41,13 +42,13 @@ func (s service) AddBackground(req *models.CreateBackgroundReq) error {
 	return nil
 }
 
-func (s service) GetBackground(backgroundID int) (*models.GetBackgroundRes, error) {
+func (s service) GetBackground(backgroundID int) (*models.GetBackgroundResponse, error) {
 	background, err := s.repo.Read(backgroundID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 
-	res := &models.GetBackgroundRes{
+	res := &models.GetBackgroundResponse{
 		BackgroundID: background.BackgroundID,
 		Name:         background.Name,
 		Description:  background.Description.String,
@@ -58,7 +59,28 @@ func (s service) GetBackground(backgroundID int) (*models.GetBackgroundRes, erro
 	return res, nil
 }
 
-func (s service) UpdateBackground(backgroundID int, req *models.UpdateBackgroundReq) error {
+func (s service) GetBackgrounds() (models.GetBackgroundsResponse, error) {
+	backgrounds, err := s.repo.ReadAll()
+	if err != nil {
+		return nil, errors.ErrDatabase(err)
+	}
+
+	res := make(models.GetBackgroundsResponse, 0)
+	for _, background := range backgrounds {
+		var bg = models.GetBackgroundResponse{
+			BackgroundID: background.BackgroundID,
+			Name:         background.Name,
+			Description:  background.Description.String,
+			CreatedAt:    background.CreatedAt,
+			UpdatedAt:    background.UpdatedAt,
+		}
+		res = append(res, &bg)
+	}
+
+	return res, nil
+}
+
+func (s service) UpdateBackground(backgroundID int, req *models.UpdateBackgroundRequest) error {
 	background := &entities.Background{
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},

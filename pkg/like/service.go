@@ -10,10 +10,10 @@ import (
 
 // Service -
 type Service interface {
-	AddLike(likerID int, like *models.AddLikeReq) error
-	GetLikeDetail(linkID int) (*models.LikeDetailRes, error)
-	DeleteLike(linkID, likerID int) error
+	AddLike(linkID, likerID int) error
+	GetLikes(linkID int) (models.LikesDetailResponse, error)
 	GetNumberOfLikes(linkID int) (int, error)
+	DeleteLike(linkID, likerID int) error
 }
 
 type service struct {
@@ -26,11 +26,10 @@ func NewService(repo Repository) Service {
 }
 
 // AddLike -
-func (s service) AddLike(likerID int, req *models.AddLikeReq) error {
+func (s service) AddLike(linkID, likerID int) error {
 	like := &entities.Like{
-		LinkID:    req.LinkID,
+		LinkID:    linkID,
 		LikerID:   likerID,
-		OwnerID:   req.OwnerID,
 		CreatedAt: time.Now().Unix(),
 	}
 
@@ -42,20 +41,22 @@ func (s service) AddLike(likerID int, req *models.AddLikeReq) error {
 	return nil
 }
 
-func (s service) GetLikeDetail(linkID int) (*models.LikeDetailRes, error) {
-	like, err := s.repo.Read(linkID)
+func (s service) GetLikes(linkID int) (models.LikesDetailResponse, error) {
+	res, err := s.repo.Read(linkID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 
-	res := &models.LikeDetailRes{
-		LikerID:   like.LikerID,
-		CreatedAt: like.CreatedAt,
-		LinkID:    like.LinkID,
-		OwnerID:   like.OwnerID,
+	return res, nil
+}
+
+func (s service) GetNumberOfLikes(linkID int) (int, error) {
+	n, err := s.repo.CountNumberOfLikes(linkID)
+	if err != nil {
+		return -1, errors.ErrDatabase(err)
 	}
 
-	return res, nil
+	return n, nil
 }
 
 func (s service) DeleteLike(linkID, likerID int) error {
@@ -68,13 +69,4 @@ func (s service) DeleteLike(linkID, likerID int) error {
 	}
 
 	return nil
-}
-
-func (s service) GetNumberOfLikes(linkID int) (int, error) {
-	n, err := s.repo.CountNumberOfLikes(linkID)
-	if err != nil {
-		return -1, errors.ErrDatabase(err)
-	}
-
-	return n, nil
 }

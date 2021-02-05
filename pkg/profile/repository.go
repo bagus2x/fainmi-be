@@ -10,10 +10,10 @@ import (
 type Repository interface {
 	Create(profile *entities.Profile) error
 	Read(profileID int) (*entities.Profile, error)
+	ReadByUsernameOrEmail(usernameEmail string) (*entities.Profile, error)
 	ReadCredentials(username string, email string) (*entities.Credentials, error)
 	Update(profileID int, profile *entities.Profile) (bool, error)
 	Delete(profileID int) (bool, error)
-	ReadByUsernameOrEmail(usernameEmail string) (*entities.Profile, error)
 }
 
 type repository struct {

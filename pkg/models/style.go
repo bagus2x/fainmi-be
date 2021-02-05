@@ -1,14 +1,14 @@
 package models
 
-// StyleReq -
-type StyleReq struct {
+// StyleRequest -
+type StyleRequest struct {
 	BackgroundID int `json:"background_id"`
 	ButtonID     int `json:"button_id"`
 	FontID       int `json:"font_id"`
 }
 
-// StyleRes -
-type StyleRes struct {
+// StyleResponse -
+type StyleResponse struct {
 	ProfileID    int `json:"profile_id"`
 	BackgroundID int `json:"background_id"`
 	ButtonID     int `json:"button_id"`

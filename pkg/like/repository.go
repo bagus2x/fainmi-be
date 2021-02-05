@@ -9,7 +9,7 @@ import (
 // Repository like
 type Repository interface {
 	Create(like *entities.Like) error
-	Read(linkID int) (*entities.Like, error)
+	Read(linkID int) ([]*entities.Like, error)
 	Delete(linkID, likerID int) (bool, error)
 	CountNumberOfLikes(linkID int) (int, error)
 }
@@ -24,28 +24,33 @@ func NewRepo(db *sql.DB) Repository {
 }
 
 func (r repository) Create(like *entities.Like) error {
-	_, err := r.db.Exec(`INSERT INTO "like" VALUES($1, $2, $3, $4)`,
+	_, err := r.db.Exec(`INSERT INTO "like" VALUES($1, $2, $3)`,
 		like.LinkID,
-		like.OwnerID,
 		like.LikerID,
 		like.CreatedAt,
 	)
 
 	return err
 }
-func (r repository) Read(linkID int) (*entities.Like, error) {
-	var like entities.Like
-	err := r.db.QueryRow(`SELECT * FROM "like" WHERE link_id=$1`, linkID).Scan(
-		&like.LinkID,
-		&like.OwnerID,
-		&like.LikerID,
-		&like.CreatedAt,
-	)
+func (r repository) Read(linkID int) ([]*entities.Like, error) {
+	rows, err := r.db.Query(`SELECT * FROM "like" WHERE link_id=$1`, linkID)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	return &like, err
+	likes := make([]*entities.Like, 0)
+
+	for rows.Next() {
+		var like entities.Like
+		err = rows.Scan(&like.LinkID, &like.LikerID, &like.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		likes = append(likes, &like)
+	}
+
+	return likes, err
 }
 
 func (r repository) CountNumberOfLikes(linkID int) (int, error) {

@@ -1,13 +1,13 @@
 package models
 
-// CreateButtonReq -
-type CreateButtonReq struct {
+// CreateButtonRequest -
+type CreateButtonRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
-// GetButtonRes -
-type GetButtonRes struct {
+// GetButtonResponse -
+type GetButtonResponse struct {
 	ButtonID    int    `json:"buttonID"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -15,5 +15,8 @@ type GetButtonRes struct {
 	UpdatedAt   int64  `json:"updatedAt"`
 }
 
-// UpdateButtonReq -
-type UpdateButtonReq CreateButtonReq
+// GetButtonsResponse - -
+type GetButtonsResponse []*GetButtonResponse
+
+// UpdateButtonRequest -
+type UpdateButtonRequest CreateButtonRequest

@@ -1,26 +1,25 @@
 package routes
 
 import (
-	"strconv"
-
+	"github.com/bagus2x/fainmi-be/api/middleware"
 	"github.com/bagus2x/fainmi-be/pkg/models"
 	"github.com/bagus2x/fainmi-be/pkg/profile"
 	"github.com/gofiber/fiber/v2"
 )
 
 // Profile endpoints
-func Profile(app fiber.Router, service profile.Service) {
+func Profile(app fiber.Router, service profile.Service, auth middleware.Authentication) {
 	v1 := app.Group("/api/v1/profile")
 
 	v1.Post("/signin", signIn(service))
 	v1.Post("/signup", signUp(service))
-	v1.Put("/update/:id", update(service))
-	v1.Delete("/delete/:id", delete(service))
+	v1.Put("/update", auth.Auth, updateProfile(service))
+	v1.Delete("/delete", auth.Auth, deleteProfile(service))
 }
 
 func signIn(service profile.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var req models.SignInReq
+		var req models.SignInRequest
 		err := c.BodyParser(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
@@ -28,7 +27,7 @@ func signIn(service profile.Service) fiber.Handler {
 			})
 		}
 
-		response, err := service.SignIn(&req)
+		res, err := service.SignIn(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),
@@ -37,14 +36,14 @@ func signIn(service profile.Service) fiber.Handler {
 
 		return c.JSON(r{
 			Success: true,
-			Data:    response,
+			Data:    res,
 		})
 	}
 }
 
 func signUp(service profile.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var req models.SignUpReq
+		var req models.SignUpRequest
 		err := c.BodyParser(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
@@ -52,7 +51,7 @@ func signUp(service profile.Service) fiber.Handler {
 			})
 		}
 
-		response, err := service.SignUp(&req)
+		res, err := service.SignUp(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),
@@ -61,14 +60,14 @@ func signUp(service profile.Service) fiber.Handler {
 
 		return c.JSON(r{
 			Success: true,
-			Data:    response,
+			Data:    res,
 		})
 	}
 }
 
-func update(service profile.Service) fiber.Handler {
+func updateProfile(service profile.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var req models.ProfileUpdateReq
+		var req models.ProfileUpdateRequest
 		err := c.BodyParser(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
@@ -76,15 +75,9 @@ func update(service profile.Service) fiber.Handler {
 			})
 		}
 
-		pID := c.Params("id")
-		id, err := strconv.Atoi(pID)
-		if err != nil {
-			return c.Status(code(err)).JSON(r{
-				Message: err.Error(),
-			})
-		}
+		profileID := c.Locals("profile_id").(int)
 
-		response, err := service.UpdateProfile(id, &req)
+		res, err := service.UpdateProfile(profileID, &req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),
@@ -93,22 +86,16 @@ func update(service profile.Service) fiber.Handler {
 
 		return c.JSON(r{
 			Success: true,
-			Data:    response,
+			Data:    res,
 		})
 	}
 }
 
-func delete(service profile.Service) fiber.Handler {
+func deleteProfile(service profile.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		pID := c.Params("id")
-		id, err := strconv.Atoi(pID)
-		if err != nil {
-			return c.Status(code(err)).JSON(r{
-				Message: err.Error(),
-			})
-		}
+		profileID := c.Locals("profile_id").(int)
 
-		err = service.DeleteProfile(id)
+		err := service.DeleteProfile(profileID)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),

@@ -13,7 +13,7 @@ func getService() Service {
 
 func TestServiceAddButton(t *testing.T) {
 	s := getService()
-	err := s.AddButton(&models.CreateButtonReq{
+	err := s.AddButton(&models.CreateButtonRequest{
 		Name:        "rounded",
 		Description: "rounded",
 	})
@@ -28,9 +28,17 @@ func TestServiceGetButton(t *testing.T) {
 	assert.NotNil(t, bg)
 }
 
+func TestServiceGetButtons(t *testing.T) {
+	s := getService()
+	btn, err := s.GetButtons()
+	t.Log(len(btn))
+	assert.NoError(t, err)
+	assert.NotNil(t, btn)
+}
+
 func TestServiceUpdateButton(t *testing.T) {
 	s := getService()
-	err := s.UpdateButton(1, &models.UpdateButtonReq{
+	err := s.UpdateButton(1, &models.UpdateButtonRequest{
 		Name:        "Sharp",
 		Description: "Tajam",
 	})

@@ -63,7 +63,7 @@ func TestRepoDelete(t *testing.T) {
 
 func TestRepoReadStyleDetail(t *testing.T) {
 	repo := NewRepo(db())
-	style, err := repo.ReadStyleDetail(0)
+	style, err := repo.ReadStyleDetail("bagus")
 	assert.NoError(t, err)
 	assert.NotNil(t, style)
 	t.Logf("%+v", style)
