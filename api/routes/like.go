@@ -13,7 +13,8 @@ func Like(app fiber.Router, service like.Service, auth middleware.Authentication
 	v1 := app.Group("/api/v1/like")
 
 	v1.Post("/:link_id", auth.Auth, createLike(service))
-	v1.Get("/:link_id", auth.Auth, getLikes(service))
+	v1.Get("/:link_id", getLikes(service))
+	v1.Get("/:link_id/total", getNumberOfLikes(service))
 	v1.Delete("/:link_id", auth.Auth, deleteLike(service))
 }
 
@@ -51,6 +52,29 @@ func getLikes(service like.Service) fiber.Handler {
 		}
 
 		res, err := service.GetLikes(linkID)
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		return c.JSON(r{
+			Success: true,
+			Data:    res,
+		})
+	}
+}
+
+func getNumberOfLikes(service like.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		linkID, err := strconv.Atoi(c.Params("link_id"))
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		res, err := service.GetNumberOfLikes(linkID)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),

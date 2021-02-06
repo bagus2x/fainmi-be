@@ -2,7 +2,6 @@ package link
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/bagus2x/fainmi-be/pkg/entities"
@@ -17,7 +16,7 @@ type Service interface {
 	GetLinks(profileID int) (models.GetLinksRes, error)
 	GetPublicLinks(username string) (models.GetLinksRes, error)
 	UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) error
-	UpdateLinkOrder(profileID int, order models.LinksOrder) error
+	UpdateLinksOrder(profileID int, order models.LinksOrder) error
 	DeleteLink(linkID, profileID int) error
 }
 
@@ -99,7 +98,6 @@ func (s service) GetLinks(profileID int) (models.GetLinksRes, error) {
 func (s service) GetPublicLinks(username string) (models.GetLinksRes, error) {
 	links, err := s.repo.ReadByUsername(username)
 	if err != nil {
-		log.Println(err)
 		return nil, errors.ErrDatabase(err)
 	}
 	res := make(models.GetLinksRes, 0)
@@ -150,7 +148,7 @@ func (s service) DeleteLink(linkID, profileID int) error {
 	return nil
 }
 
-func (s service) UpdateLinkOrder(profileID int, orders models.LinksOrder) error {
+func (s service) UpdateLinksOrder(profileID int, orders models.LinksOrder) error {
 	err := s.repo.UpdateOrder(profileID, orders)
 	if err != nil {
 		return errors.ErrDatabase(err)

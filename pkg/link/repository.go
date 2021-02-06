@@ -3,7 +3,6 @@ package link
 import (
 	"context"
 	"database/sql"
-	"log"
 	"strconv"
 
 	"github.com/bagus2x/fainmi-be/pkg/entities"
@@ -163,7 +162,6 @@ func (r repository) UpdateOrder(profileID int, orders []*entities.Order) error {
 		return err
 	}
 	if rowsAffected != int64(len(orders)) {
-		log.Println(err)
 		tx.Rollback()
 		return errors.ErrorMessage(errors.ErrBadRequest, "Link ID not Found")
 	}

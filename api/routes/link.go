@@ -18,7 +18,7 @@ func Link(app fiber.Router, service link.Service, auth middleware.Authentication
 	v1.Get("/:link_id", auth.Auth, getLink(service))
 	v1.Put("/:link_id", auth.Auth, updateLink(service))
 	v1.Get("/public/:username", getPublicLinks(service))
-	v1.Put("/", auth.Auth, updateLinkOrder(service))
+	v1.Put("/", auth.Auth, updateLinksOrder(service))
 	v1.Delete("/:link_id", auth.Auth, deleteLink(service))
 }
 
@@ -141,7 +141,7 @@ func updateLink(service link.Service) fiber.Handler {
 	}
 }
 
-func updateLinkOrder(service link.Service) fiber.Handler {
+func updateLinksOrder(service link.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req models.LinksOrder
 		err := c.BodyParser(&req)
@@ -153,7 +153,7 @@ func updateLinkOrder(service link.Service) fiber.Handler {
 
 		profileID := c.Locals("profile_id").(int)
 
-		err = service.UpdateLinkOrder(profileID, req)
+		err = service.UpdateLinksOrder(profileID, req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),

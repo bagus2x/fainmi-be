@@ -57,6 +57,6 @@ func TestServiceUpdateLink(t *testing.T) {
 
 func TestServiceUpdateLinkOrder(t *testing.T) {
 	s := getService()
-	err := s.UpdateLinkOrder(1, models.LinksOrder{{LinkID: 3, Order: 100}})
+	err := s.UpdateLinksOrder(1, models.LinksOrder{{LinkID: 3, Order: 100}})
 	assert.NoError(t, err)
 }
