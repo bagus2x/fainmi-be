@@ -60,11 +60,11 @@ func (s service) GetNumberOfLikes(linkID int) (int, error) {
 }
 
 func (s service) DeleteLike(linkID, likerID int) error {
-	isDeleted, err := s.repo.Delete(linkID, likerID)
+	deleted, err := s.repo.Delete(linkID, likerID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrLikeNotFound
 	}
 

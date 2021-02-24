@@ -13,9 +13,10 @@ import (
 type Service interface {
 	CreateLink(profileID int, req *models.CreateLinkRequest) (*models.CreateLinkResponse, error)
 	GetLink(linkID, profileID int) (*models.GetLinkResponse, error)
-	GetLinks(profileID int) (models.GetLinksRes, error)
-	GetPublicLinks(username string) (models.GetLinksRes, error)
-	UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) error
+	GetLinks(profileID int) (models.GetLinksResponse, error)
+	GetPublicLinks(username string) (models.GetLinksResponse, error)
+	UpdateLink(linkID, profileID int, req *models.UpdateLinkRequest) (*models.UpdateLinkResponse, error)
+	UpdateDisplay(linkID, profileID int, req *models.UpdateDisplayRequest) error
 	UpdateLinksOrder(profileID int, order models.LinksOrder) error
 	DeleteLink(linkID, profileID int) error
 }
@@ -73,12 +74,12 @@ func (s service) GetLink(linkID, profileID int) (*models.GetLinkResponse, error)
 	return res, nil
 }
 
-func (s service) GetLinks(profileID int) (models.GetLinksRes, error) {
+func (s service) GetLinks(profileID int) (models.GetLinksResponse, error) {
 	links, err := s.repo.ReadByProfileID(profileID)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
-	res := make(models.GetLinksRes, 0)
+	res := make(models.GetLinksResponse, 0)
 	for _, link := range links {
 		res = append(res, &models.GetLinkResponse{
 			LinkID:    link.LinkID,
@@ -95,12 +96,12 @@ func (s service) GetLinks(profileID int) (models.GetLinksRes, error) {
 	return res, nil
 }
 
-func (s service) GetPublicLinks(username string) (models.GetLinksRes, error) {
+func (s service) GetPublicLinks(username string) (models.GetLinksResponse, error) {
 	links, err := s.repo.ReadByUsername(username)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
-	res := make(models.GetLinksRes, 0)
+	res := make(models.GetLinksResponse, 0)
 	for _, link := range links {
 		res = append(res, &models.GetLinkResponse{
 			LinkID:    link.LinkID,
@@ -117,7 +118,7 @@ func (s service) GetPublicLinks(username string) (models.GetLinksRes, error) {
 	return res, nil
 }
 
-func (s service) UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) error {
+func (s service) UpdateLink(linkID, profileID int, req *models.UpdateLinkRequest) (*models.UpdateLinkResponse, error) {
 	link := &entities.Link{
 		Order:     req.Order,
 		Title:     sql.NullString{Valid: req.Title != "", String: req.Title},
@@ -125,11 +126,31 @@ func (s service) UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) er
 		Display:   req.Display,
 		UpdatedAt: time.Now().Unix(),
 	}
-	isUpdated, err := s.repo.Update(linkID, profileID, link)
+	updated, err := s.repo.Update(linkID, profileID, link)
+	if err != nil {
+		return nil, errors.ErrDatabase(err)
+	}
+	if !updated {
+		return nil, errors.ErrLinkNotFound
+	}
+
+	res := &models.UpdateLinkResponse{
+		LinkID:  linkID,
+		Display: req.Display,
+		Order:   req.Order,
+		Title:   req.Title,
+		URL:     req.URL,
+	}
+
+	return res, nil
+}
+
+func (s service) UpdateDisplay(linkID, profileID int, req *models.UpdateDisplayRequest) error {
+	updated, err := s.repo.UpdateDisplay(linkID, profileID, req.Display)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isUpdated {
+	if !updated {
 		return errors.ErrLinkNotFound
 	}
 
@@ -137,19 +158,19 @@ func (s service) UpdateLink(linkID, profileID int, req *models.LinkUpdateReq) er
 }
 
 func (s service) DeleteLink(linkID, profileID int) error {
-	isDeleted, err := s.repo.Delete(linkID, profileID)
+	deleted, err := s.repo.Delete(linkID, profileID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrLinkNotFound
 	}
 
 	return nil
 }
 
-func (s service) UpdateLinksOrder(profileID int, orders models.LinksOrder) error {
-	err := s.repo.UpdateOrder(profileID, orders)
+func (s service) UpdateLinksOrder(profileID int, req models.LinksOrder) error {
+	err := s.repo.UpdateOrder(profileID, req)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}

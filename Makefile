@@ -3,7 +3,7 @@
 include .env
 
 dev:
-	go run api/app.go
+	export PORT=8080 && go run api/app.go
 build:
 	go build -o bin/app api/app.go
 adminer:

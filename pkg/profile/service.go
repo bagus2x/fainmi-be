@@ -18,6 +18,7 @@ import (
 type Service interface {
 	SignUp(req *models.SignUpRequest) (*models.SignUpResponse, error)
 	SignIn(req *models.SignInRequest) (*models.SignInResponse, error)
+	GetProfile(profileID int) (*models.GetProfileResponse, error)
 	UpdateProfile(profileID int, req *models.ProfileUpdateRequest) (*models.ProfileUpdateResponse, error)
 	DeleteProfile(profileID int) error
 	CreateAccessToken(profileID int) (string, error)
@@ -73,10 +74,14 @@ func (s service) SignUp(req *models.SignUpRequest) (*models.SignUpResponse, erro
 	}
 
 	res := &models.SignUpResponse{
-		ProfileID:   profile.ProfileID,
-		Email:       profile.Email,
-		Username:    profile.Username,
-		AccessToken: accessToken,
+		Profile: models.Profile{
+			ProfileID: profile.ProfileID,
+			Email:     profile.Email,
+			Username:  profile.Username,
+		},
+		Token: models.Token{
+			AccessToken: accessToken,
+		},
 	}
 
 	return res, nil
@@ -104,11 +109,31 @@ func (s service) SignIn(req *models.SignInRequest) (*models.SignInResponse, erro
 	}
 
 	res := &models.SignInResponse{
-		ProfileID:   profile.ProfileID,
-		Email:       profile.Email,
-		Username:    profile.Username,
-		Photo:       profile.Photo.String,
-		AccessToken: accessToken,
+		Profile: models.Profile{
+			ProfileID: profile.ProfileID,
+			Email:     profile.Email,
+			Username:  profile.Username,
+			Photo:     profile.Photo.String,
+		},
+		Token: models.Token{
+			AccessToken: accessToken,
+		},
+	}
+
+	return res, nil
+}
+
+func (s service) GetProfile(profileID int) (*models.GetProfileResponse, error) {
+	profile, err := s.repo.Read(profileID)
+	if err != nil {
+		return nil, errors.ErrUserNotFound
+	}
+
+	res := &models.GetProfileResponse{
+		ProfileID: profile.ProfileID,
+		Photo:     profile.Photo.String,
+		Username:  profile.Username,
+		Email:     profile.Email,
 	}
 
 	return res, nil
@@ -137,11 +162,11 @@ func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateRequest) 
 		profile.Password = hashedPassword
 	}
 
-	isUpdated, err := s.repo.Update(profileID, profile)
+	updated, err := s.repo.Update(profileID, profile)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
-	if !isUpdated {
+	if !updated {
 		return nil, errors.ErrUserNotFound
 	}
 
@@ -156,11 +181,11 @@ func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateRequest) 
 }
 
 func (s service) DeleteProfile(profileID int) error {
-	isDeleted, err := s.repo.Delete(profileID)
+	deleted, err := s.repo.Delete(profileID)
 	if err != nil {
 		return errors.ErrInternalServer
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrUserNotFound
 	}
 

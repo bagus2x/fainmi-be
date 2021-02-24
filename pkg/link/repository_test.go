@@ -52,20 +52,20 @@ func TestRepoRead(t *testing.T) {
 
 func TestRepoUpdate(t *testing.T) {
 	repo := NewRepo(db())
-	isUpdated, err := repo.Update(80, 2, &f)
+	updated, err := repo.Update(80, 2, &f)
 	t.Log(err)
 	assert.Condition(t, func() (success bool) {
-		return isUpdated
+		return updated
 	})
 	assert.NoError(t, err)
 }
 
 func TestRepoDelete(t *testing.T) {
 	repo := NewRepo(db())
-	isDeleted, err := repo.Delete(3, 1)
+	deleted, err := repo.Delete(3, 1)
 	t.Log(err)
 	assert.Condition(t, func() (success bool) {
-		return isDeleted
+		return deleted
 	})
 	assert.NoError(t, err)
 }

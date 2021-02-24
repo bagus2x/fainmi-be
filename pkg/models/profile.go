@@ -2,6 +2,19 @@ package models
 
 import "github.com/dgrijalva/jwt-go"
 
+// Profile -
+type Profile struct {
+	ProfileID int    `json:"profileID"`
+	Photo     string `json:"photo"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+}
+
+// Token -
+type Token struct {
+	AccessToken string `json:"accessToken"`
+}
+
 // SignUpRequest -
 type SignUpRequest struct {
 	Username string `json:"username" validate:"required,gte=4"`
@@ -11,10 +24,8 @@ type SignUpRequest struct {
 
 // SignUpResponse -
 type SignUpResponse struct {
-	ProfileID   int    `json:"profileID"`
-	Username    string `json:"username"`
-	Email       string `json:"email"`
-	AccessToken string `json:"accessToken"`
+	Profile Profile `json:"profile"`
+	Token   Token   `json:"token"`
 }
 
 //SignInRequest -
@@ -25,11 +36,8 @@ type SignInRequest struct {
 
 //SignInResponse -
 type SignInResponse struct {
-	ProfileID   int    `json:"profileID"`
-	Photo       string `json:"photo"`
-	Username    string `json:"username"`
-	Email       string `json:"email"`
-	AccessToken string `json:"accessToken"`
+	Profile Profile `json:"profile"`
+	Token   Token   `json:"token"`
 }
 
 // ProfileUpdateRequest -
@@ -41,12 +49,10 @@ type ProfileUpdateRequest struct {
 }
 
 // ProfileUpdateResponse -
-type ProfileUpdateResponse struct {
-	ProfileID int    `json:"profileID"`
-	Photo     string `json:"photo"`
-	Username  string `json:"username"`
-	Email     string `json:"email"`
-}
+type ProfileUpdateResponse Profile
+
+// GetProfileResponse -
+type GetProfileResponse Profile
 
 // AccessClaims -
 type AccessClaims struct {

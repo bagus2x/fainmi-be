@@ -86,11 +86,11 @@ func (s service) UpdateButton(buttonID int, req *models.UpdateButtonRequest) err
 		Description: sql.NullString{Valid: req.Name != "", String: req.Name},
 		UpdatedAt:   time.Now().Unix(),
 	}
-	isUpdated, err := s.repo.Update(buttonID, button)
+	updated, err := s.repo.Update(buttonID, button)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isUpdated {
+	if !updated {
 		return errors.ErrButtonNotFound
 	}
 
@@ -98,11 +98,11 @@ func (s service) UpdateButton(buttonID int, req *models.UpdateButtonRequest) err
 }
 
 func (s service) DeleteButton(buttonID int) error {
-	isDeleted, err := s.repo.Delete(buttonID)
+	deleted, err := s.repo.Delete(buttonID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrButtonNotFound
 	}
 

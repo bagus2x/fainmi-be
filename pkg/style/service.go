@@ -85,11 +85,11 @@ func (s service) UpdateStyle(profileID int, req *models.StyleRequest) error {
 		UpdatedAt:    time.Now().Unix(),
 	}
 
-	isUpdated, err := s.repo.Update(profileID, style)
+	updated, err := s.repo.Update(profileID, style)
 	if err != nil {
 		return err
 	}
-	if !isUpdated {
+	if !updated {
 		return errors.ErrStyleNotFound
 	}
 
@@ -97,11 +97,11 @@ func (s service) UpdateStyle(profileID int, req *models.StyleRequest) error {
 }
 
 func (s service) DeleteStyle(profileID int) error {
-	isDeleted, err := s.repo.Delete(profileID)
+	deleted, err := s.repo.Delete(profileID)
 	if err != nil {
 		return err
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrStyleNotFound
 	}
 

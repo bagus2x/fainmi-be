@@ -16,9 +16,10 @@ func Link(app fiber.Router, service link.Service, auth middleware.Authentication
 	v1.Post("/", auth.Auth, createLink(service))
 	v1.Get("/", auth.Auth, getLinks(service))
 	v1.Get("/:link_id", auth.Auth, getLink(service))
-	v1.Put("/:link_id", auth.Auth, updateLink(service))
 	v1.Get("/public/:username", getPublicLinks(service))
-	v1.Put("/", auth.Auth, updateLinksOrder(service))
+	v1.Put("/:link_id", auth.Auth, updateLink(service))
+	v1.Patch("/order", auth.Auth, updateLinksOrder(service))
+	v1.Patch("/display/:link_id", auth.Auth, updateLinkDisplay(service))
 	v1.Delete("/:link_id", auth.Auth, deleteLink(service))
 }
 
@@ -111,7 +112,7 @@ func getLinks(service link.Service) fiber.Handler {
 
 func updateLink(service link.Service) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var req models.LinkUpdateReq
+		var req models.UpdateLinkRequest
 		err := c.BodyParser(&req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
@@ -128,7 +129,7 @@ func updateLink(service link.Service) fiber.Handler {
 
 		profileID := c.Locals("profile_id").(int)
 
-		err = service.UpdateLink(linkID, profileID, &req)
+		res, err := service.UpdateLink(linkID, profileID, &req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),
@@ -137,6 +138,7 @@ func updateLink(service link.Service) fiber.Handler {
 
 		return c.JSON(r{
 			Success: true,
+			Data:    res,
 		})
 	}
 }
@@ -154,6 +156,38 @@ func updateLinksOrder(service link.Service) fiber.Handler {
 		profileID := c.Locals("profile_id").(int)
 
 		err = service.UpdateLinksOrder(profileID, req)
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		return c.JSON(r{
+			Success: true,
+		})
+	}
+}
+
+func updateLinkDisplay(service link.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var req models.UpdateDisplayRequest
+		err := c.BodyParser(&req)
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		linkID, err := strconv.Atoi(c.Params("link_id"))
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		profileID := c.Locals("profile_id").(int)
+
+		err = service.UpdateDisplay(linkID, profileID, &req)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),

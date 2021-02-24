@@ -54,9 +54,9 @@ func TestRepoUpdate(t *testing.T) {
 
 func TestRepoDelete(t *testing.T) {
 	repo := NewRepo(db())
-	isDeleted, err := repo.Delete(0)
+	deleted, err := repo.Delete(0)
 	assert.Condition(t, func() (success bool) {
-		return isDeleted
+		return deleted
 	})
 	assert.Nil(t, err)
 }

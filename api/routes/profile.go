@@ -13,6 +13,7 @@ func Profile(app fiber.Router, service profile.Service, auth middleware.Authenti
 
 	v1.Post("/signin", signIn(service))
 	v1.Post("/signup", signUp(service))
+	v1.Get("/", auth.Auth, getProfile(service))
 	v1.Put("/update", auth.Auth, updateProfile(service))
 	v1.Delete("/delete", auth.Auth, deleteProfile(service))
 }
@@ -52,6 +53,24 @@ func signUp(service profile.Service) fiber.Handler {
 		}
 
 		res, err := service.SignUp(&req)
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		return c.JSON(r{
+			Success: true,
+			Data:    res,
+		})
+	}
+}
+
+func getProfile(service profile.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		profileID := c.Locals("profile_id").(int)
+
+		res, err := service.GetProfile(profileID)
 		if err != nil {
 			return c.Status(code(err)).JSON(r{
 				Message: err.Error(),

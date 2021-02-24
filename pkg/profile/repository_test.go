@@ -47,18 +47,18 @@ func TestRepoRead(t *testing.T) {
 
 func TestRepoUpdate(t *testing.T) {
 	repo := NewRepo(db())
-	isUpdated, err := repo.Update(1, p)
+	updated, err := repo.Update(1, p)
 	assert.Condition(t, func() (success bool) {
-		return isUpdated
+		return updated
 	})
 	assert.Nil(t, err)
 }
 
 func TestRepoDelete(t *testing.T) {
 	repo := NewRepo(db())
-	isDeleted, err := repo.Delete(0)
+	deleted, err := repo.Delete(0)
 	assert.Condition(t, func() (success bool) {
-		return isDeleted
+		return deleted
 	})
 	assert.Nil(t, err)
 }

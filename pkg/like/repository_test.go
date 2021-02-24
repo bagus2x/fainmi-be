@@ -44,10 +44,10 @@ func TestRepoRead(t *testing.T) {
 
 func TestRepoDelete(t *testing.T) {
 	repo := NewRepo(db())
-	isDeleted, err := repo.Delete(1, 2)
+	deleted, err := repo.Delete(1, 2)
 	t.Log(err)
 	assert.Condition(t, func() (success bool) {
-		return isDeleted
+		return deleted
 	})
 	assert.NoError(t, err)
 }

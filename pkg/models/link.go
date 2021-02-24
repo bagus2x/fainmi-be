@@ -31,11 +31,19 @@ type GetLinkResponse struct {
 	UpdatedAt int64  `json:"updatedAt"`
 }
 
-// GetLinksRes get links repsonse
-type GetLinksRes []*GetLinkResponse
+// GetLinksResponse -
+type GetLinksResponse []*GetLinkResponse
 
-// LinkUpdateReq link update request
-type LinkUpdateReq CreateLinkRequest
+// UpdateLinkRequest -
+type UpdateLinkRequest CreateLinkRequest
 
-// LinksOrder equest struct & response struct
+// UpdateDisplayRequest -
+type UpdateDisplayRequest struct {
+	Display bool `json:"display"`
+}
+
+// UpdateLinkResponse -
+type UpdateLinkResponse CreateLinkResponse
+
+// LinksOrder -
 type LinksOrder []*entities.Order

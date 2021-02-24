@@ -18,7 +18,7 @@ func TestServiceSignUp(t *testing.T) {
 		Password: "jaenab123",
 		Username: "jaenab",
 	})
-	t.Log(res.ProfileID)
+	t.Log(res.Profile.ProfileID)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 }

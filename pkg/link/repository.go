@@ -16,6 +16,7 @@ type Repository interface {
 	ReadByProfileID(profileID int) ([]*entities.Link, error)
 	ReadByUsername(username string) ([]*entities.Link, error)
 	Update(linkID, profileID int, link *entities.Link) (bool, error)
+	UpdateDisplay(linkID, profileID int, value bool) (bool, error)
 	Delete(linkID, profileID int) (bool, error)
 	UpdateOrder(profileID int, orders []*entities.Order) error
 }
@@ -64,7 +65,7 @@ func (r repository) Read(linkID, profileID int) (*entities.Link, error) {
 }
 
 func (r repository) ReadByProfileID(profileID int) ([]*entities.Link, error) {
-	q := `SELECT link_id, profile_id, "order", title, url, display FROM link WHERE profile_id=$1`
+	q := `SELECT link_id, profile_id, "order", title, url, display FROM link WHERE profile_id=$1 ORDER BY "order", updated_at DESC`
 	rows, err := r.db.Query(q, profileID)
 	if err != nil {
 		return nil, err
@@ -112,6 +113,19 @@ func (r repository) ReadByUsername(username string) ([]*entities.Link, error) {
 func (r repository) Update(linkID, profileID int, link *entities.Link) (bool, error) {
 	q := `UPDATE link SET "order"=$1, title=$2, url=$3, display=$4, updated_at=$5 WHERE link_id=$6 AND profile_id=$7`
 	res, err := r.db.Exec(q, link.Order, link.Title, link.URL, link.Display, link.UpdatedAt, linkID, profileID)
+	if err != nil {
+		return false, err
+	}
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	return rowsAffected > 0, nil
+}
+
+func (r repository) UpdateDisplay(linkID, profileID int, value bool) (bool, error) {
+	res, err := r.db.Exec(`UPDATE link SET display=$1 WHERE link_id=$2 AND profile_id=$3`, value, linkID, profileID)
 	if err != nil {
 		return false, err
 	}

@@ -1,0 +1,105 @@
+Date : 2021-02-22 22:03:33
+Directory : /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi
+Total : 61 files,  3544 codes, 134 comments, 714 blanks, all 4392 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Go       |         56 |      3,435 |        134 |        700 |      4,269 |
+| SQL      |          2 |         82 |          0 |          7 |         89 |
+| Makefile |          1 |         16 |          0 |          3 |         19 |
+| XML      |          1 |         11 |          0 |          3 |         14 |
+| Markdown |          1 |          0 |          0 |          1 |          1 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                   | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                      |         61 |      3,544 |        134 |        714 |      4,392 |
+| api                                                                                                    |         11 |        980 |         21 |        192 |      1,193 |
+| api/middleware                                                                                         |          1 |         34 |          3 |          9 |         46 |
+| api/routes                                                                                             |          9 |        873 |          9 |        168 |      1,050 |
+| config                                                                                                 |          1 |         13 |          1 |          5 |         19 |
+| migrations                                                                                             |          2 |         82 |          0 |          7 |         89 |
+| pkg                                                                                                    |         44 |      2,442 |        112 |        503 |      3,057 |
+| pkg/background                                                                                         |          4 |        272 |          4 |         57 |        333 |
+| pkg/button                                                                                             |          4 |        272 |          4 |         56 |        332 |
+| pkg/entities                                                                                           |          7 |         81 |         13 |         23 |        117 |
+| pkg/font                                                                                               |          4 |        272 |          4 |         58 |        334 |
+| pkg/like                                                                                               |          4 |        196 |          5 |         48 |        249 |
+| pkg/link                                                                                               |          4 |        459 |          7 |         76 |        542 |
+| pkg/models                                                                                             |          9 |        198 |         65 |         51 |        314 |
+| pkg/models/errors                                                                                      |          1 |         56 |         26 |          4 |         86 |
+| pkg/profile                                                                                            |          4 |        404 |          5 |         78 |        487 |
+| pkg/style                                                                                              |          4 |        288 |          5 |         56 |        349 |
++--------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                               | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/Makefile                            | Makefile |         16 |          0 |          3 |         19 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/README.md                           | Markdown |          0 |          0 |          1 |          1 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/app.go                          | Go       |         73 |          9 |         15 |         97 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/middleware/auth.go              | Go       |         34 |          3 |          9 |         46 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/background.go            | Go       |        117 |          1 |         20 |        138 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/button.go                | Go       |        114 |          1 |         20 |        135 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/common.go                | Go       |         21 |          1 |          6 |         28 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/font.go                  | Go       |        114 |          1 |         20 |        135 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/like.go                  | Go       |         94 |          1 |         19 |        114 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/link.go                  | Go       |        188 |          1 |         37 |        226 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/profile.go               | Go       |        109 |          1 |         20 |        130 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/style.go                 | Go       |        101 |          1 |         21 |        123 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/api/routes/test.go                  | Go       |         15 |          1 |          5 |         21 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/config/postgres.go                  | Go       |         13 |          1 |          5 |         19 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/go.mod                              | XML      |         11 |          0 |          3 |         14 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/migrations/1_create_tables.down.sql | SQL      |          7 |          0 |          0 |          7 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/migrations/1_create_tables.up.sql   | SQL      |         75 |          0 |          7 |         82 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/background/repository.go        | Go       |         81 |          2 |         18 |        101 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/background/repository_test.go   | Go       |         57 |          0 |         11 |         68 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/background/service.go           | Go       |         91 |          2 |         18 |        111 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/background/service_test.go      | Go       |         43 |          0 |         10 |         53 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/button/repository.go            | Go       |         81 |          2 |         17 |        100 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/button/repository_test.go       | Go       |         57 |          0 |         11 |         68 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/button/service.go               | Go       |         91 |          2 |         18 |        111 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/button/service_test.go          | Go       |         43 |          0 |         10 |         53 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/background.go          | Go       |          9 |          1 |          3 |         13 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/button.go              | Go       |          9 |          1 |          3 |         13 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/font.go                | Go       |          9 |          1 |          3 |         13 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/like.go                | Go       |          6 |          1 |          2 |          9 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/link.go                | Go       |         16 |          2 |          4 |         22 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/profile.go             | Go       |         16 |          2 |          4 |         22 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/entities/style.go               | Go       |         16 |          5 |          4 |         25 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/font/repository.go              | Go       |         81 |          2 |         19 |        102 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/font/repository_test.go         | Go       |         57 |          0 |         11 |         68 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/font/service.go                 | Go       |         91 |          2 |         18 |        111 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/font/service_test.go            | Go       |         43 |          0 |         10 |         53 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/like/repository.go              | Go       |         58 |          2 |         15 |         75 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/like/repository_test.go         | Go       |         52 |          0 |         10 |         62 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/like/service.go                 | Go       |         55 |          3 |         15 |         73 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/like/service_test.go            | Go       |         31 |          0 |          8 |         39 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/link/repository.go              | Go       |        155 |          4 |         27 |        186 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/link/repository_test.go         | Go       |         96 |          1 |         16 |        113 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/link/service.go                 | Go       |        155 |          2 |         23 |        180 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/link/service_test.go            | Go       |         53 |          0 |         10 |         63 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/background.go            | Go       |         14 |          4 |          5 |         23 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/button.go                | Go       |         14 |          4 |          5 |         23 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/errors/errors.go         | Go       |         56 |         26 |          4 |         86 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/font.go                  | Go       |         14 |          4 |          5 |         23 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/like.go                  | Go       |          4 |          2 |          4 |         10 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/link.go                  | Go       |         32 |          8 |         10 |         50 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/profile.go               | Go       |         40 |         10 |         12 |         62 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/style.go                 | Go       |         18 |          6 |          4 |         28 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/models/web.go                   | Go       |          6 |          1 |          2 |          9 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/profile/repository.go           | Go       |        106 |          3 |         18 |        127 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/profile/repository_test.go      | Go       |         55 |          0 |         10 |         65 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/profile/service.go              | Go       |        196 |          2 |         41 |        239 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/profile/service_test.go         | Go       |         47 |          0 |          9 |         56 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/style/repository.go             | Go       |         92 |          3 |         16 |        111 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/style/repository_test.go        | Go       |         60 |          0 |         11 |         71 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/style/service.go                | Go       |         88 |          2 |         20 |        110 |
+| /home/bagus2x/Documents/workspace/go/src/github.com/bagus2x/fainmi/pkg/style/service_test.go           | Go       |         48 |          0 |          9 |         57 |
+| Total                                                                                                  |          |      3,544 |        134 |        714 |      4,392 |
++--------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

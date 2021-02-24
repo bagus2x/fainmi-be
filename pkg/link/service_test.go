@@ -46,7 +46,7 @@ func TestServiceGetLinks(t *testing.T) {
 
 func TestServiceUpdateLink(t *testing.T) {
 	s := getService()
-	err := s.UpdateLink(1, 1, &models.LinkUpdateReq{
+	_, err := s.UpdateLink(1, 1, &models.UpdateLinkRequest{
 		Order:   1009,
 		Display: false,
 		Title:   "my fb",

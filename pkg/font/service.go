@@ -86,11 +86,11 @@ func (s service) UpdateFont(fontID int, req *models.UpdateFontRequest) error {
 		Description: sql.NullString{Valid: req.Name != "", String: req.Name},
 		UpdatedAt:   time.Now().Unix(),
 	}
-	isUpdated, err := s.repo.Update(fontID, font)
+	updated, err := s.repo.Update(fontID, font)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isUpdated {
+	if !updated {
 		return errors.ErrFontNotFound
 	}
 
@@ -98,11 +98,11 @@ func (s service) UpdateFont(fontID int, req *models.UpdateFontRequest) error {
 }
 
 func (s service) DeleteFont(fontID int) error {
-	isDeleted, err := s.repo.Delete(fontID)
+	deleted, err := s.repo.Delete(fontID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrFontNotFound
 	}
 

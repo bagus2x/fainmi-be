@@ -86,11 +86,11 @@ func (s service) UpdateBackground(backgroundID int, req *models.UpdateBackground
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},
 		UpdatedAt:   time.Now().Unix(),
 	}
-	isUpdated, err := s.repo.Update(backgroundID, background)
+	updated, err := s.repo.Update(backgroundID, background)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isUpdated {
+	if !updated {
 		return errors.ErrBackgroundNotFound
 	}
 
@@ -98,11 +98,11 @@ func (s service) UpdateBackground(backgroundID int, req *models.UpdateBackground
 }
 
 func (s service) DeleteBackground(BackgroundID int) error {
-	isDeleted, err := s.repo.Delete(BackgroundID)
+	deleted, err := s.repo.Delete(BackgroundID)
 	if err != nil {
 		return errors.ErrDatabase(err)
 	}
-	if !isDeleted {
+	if !deleted {
 		return errors.ErrBackgroundNotFound
 	}
 
