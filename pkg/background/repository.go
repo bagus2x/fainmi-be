@@ -25,9 +25,11 @@ func NewRepo(db *sql.DB) Repository {
 }
 
 func (r repository) Create(background *entities.Background) error {
-	_, err := r.db.Exec(`INSERT INTO background VALUES(DEFAULT, $1, $2, $3, $4)`,
+	_, err := r.db.Exec(`INSERT INTO background VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)`,
 		background.Name,
 		background.Description,
+		background.Image,
+		background.SubImage,
 		background.CreatedAt,
 		background.UpdatedAt,
 	)
@@ -41,6 +43,8 @@ func (r repository) Read(backgroundID int) (*entities.Background, error) {
 		&background.BackgroundID,
 		&background.Name,
 		&background.Description,
+		&background.Image,
+		&background.SubImage,
 		&background.CreatedAt,
 		&background.UpdatedAt,
 	)
@@ -62,10 +66,19 @@ func (r repository) ReadAll() ([]*entities.Background, error) {
 
 	for rows.Next() {
 		var bg entities.Background
-		err := rows.Scan(&bg.BackgroundID, &bg.Name, &bg.Description, &bg.UpdatedAt, &bg.CreatedAt)
+		err := rows.Scan(
+			&bg.BackgroundID,
+			&bg.Name,
+			&bg.Description,
+			&bg.Image,
+			&bg.SubImage,
+			&bg.CreatedAt,
+			&bg.UpdatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
+
 		backgrounds = append(backgrounds, &bg)
 	}
 
@@ -73,9 +86,11 @@ func (r repository) ReadAll() ([]*entities.Background, error) {
 }
 
 func (r repository) Update(backgroundID int, background *entities.Background) (bool, error) {
-	res, err := r.db.Exec(`UPDATE background SET name=$1, description=$2, updated_at=$3 WHERE background_id=$4`,
+	res, err := r.db.Exec(`UPDATE background SET name=$1, description=$2, image=$3, sub_image=$4, updated_at=$5 WHERE background_id=$6`,
 		background.Name,
 		background.Description,
+		background.Image,
+		background.SubImage,
 		background.UpdatedAt,
 		backgroundID,
 	)

@@ -20,6 +20,7 @@ type Service interface {
 	SignIn(req *models.SignInRequest) (*models.SignInResponse, error)
 	GetProfile(profileID int) (*models.GetProfileResponse, error)
 	UpdateProfile(profileID int, req *models.ProfileUpdateRequest) (*models.ProfileUpdateResponse, error)
+	UpdatePhoto(profileID int, photo string) error
 	DeleteProfile(profileID int) error
 	CreateAccessToken(profileID int) (string, error)
 	ParseAccessToken(token string) (*models.AccessClaims, error)
@@ -178,6 +179,10 @@ func (s service) UpdateProfile(profileID int, req *models.ProfileUpdateRequest) 
 	}
 
 	return &res, nil
+}
+
+func (s service) UpdatePhoto(profileID int, photo string) error {
+	return s.repo.UpdatePhoto(profileID, photo)
 }
 
 func (s service) DeleteProfile(profileID int) error {

@@ -72,6 +72,11 @@ func main() {
 	// Middleware
 	auth := middleware.NewAuth(profileService)
 
+	app.Static("/public", "./public/", fiber.Static{
+		Compress:  true,
+		ByteRange: true,
+	})
+
 	// Routes/Controller
 	routes.Test(app, auth)
 	routes.Profile(app, profileService, auth)

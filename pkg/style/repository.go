@@ -56,23 +56,29 @@ func (r repository) Read(profileID int) (*entities.Style, error) {
 
 // ReadStyleDetail -
 func (r repository) ReadStyleDetail(username string) (*entities.StyleDetail, error) {
-	q := `SELECT profile_id, bgn.name as background, btn.name as button, fnt.name as font FROM style stl
+	q := `SELECT profile_id, bgn.name, bgn.image, bgn.sub_image, btn.name, btn.image, fnt.name, fnt.font_family, fnt.href
+		  FROM style stl
 		  LEFT JOIN background bgn USING(background_id)
 		  LEFT JOIN button btn USING(button_id)
 		  LEFT JOIN font fnt USING(font_id)
 		  WHERE profile_id=(SELECT profile_id FROM profile WHERE username=$1)`
-	var styleDetail entities.StyleDetail
+	var stl entities.StyleDetail
 	err := r.db.QueryRow(q, username).Scan(
-		&styleDetail.ProfileID,
-		&styleDetail.Background,
-		&styleDetail.Button,
-		&styleDetail.Font,
+		&stl.ProfileID,
+		&stl.BackgroundName,
+		&stl.BackgroundImage,
+		&stl.BackgroundSubImage,
+		&stl.ButtonName,
+		&stl.ButtonImage,
+		&stl.FontName,
+		&stl.FontFamily,
+		&stl.FontHref,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &styleDetail, nil
+	return &stl, nil
 }
 
 func (r repository) Update(profileID int, style *entities.Style) (bool, error) {

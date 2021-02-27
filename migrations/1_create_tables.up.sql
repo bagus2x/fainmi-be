@@ -13,6 +13,8 @@ CREATE TABLE background(
     background_id SERIAL,
     name VARCHAR(25) UNIQUE NOT NULL,
     description VARCHAR(512),
+    image VARCHAR(512) NOT NULL,
+    sub_image VARCHAR(512),
     created_at INT NOT NULL,
     updated_at INT NOT NULL,
     PRIMARY KEY(background_id)
@@ -22,6 +24,7 @@ CREATE TABLE button(
     button_id SERIAL,
     name VARCHAR(25) UNIQUE NOT NULL,
     description VARCHAR(512),
+    image VARCHAR(512),
     created_at INT NOT NULL,
     updated_at INT NOT NULL,
     PRIMARY KEY(button_id)
@@ -31,6 +34,8 @@ CREATE TABLE font(
     font_id SERIAL,
     name VARCHAR(25) UNIQUE NOT NULL,
     description VARCHAR(512),
+    font_family VARCHAR(255) NOT NULL,
+    href VARCHAR(512) NOT NULL,
     created_at INT NOT NULL,
     updated_at INT NOT NULL,
     PRIMARY KEY(font_id)

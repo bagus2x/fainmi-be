@@ -25,9 +25,11 @@ func NewRepo(db *sql.DB) Repository {
 }
 
 func (r repository) Create(font *entities.Font) error {
-	_, err := r.db.Exec(`INSERT INTO font VALUES(DEFAULT, $1, $2, $3, $4)`,
+	_, err := r.db.Exec(`INSERT INTO font VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)`,
 		font.Name,
 		font.Description,
+		font.FontFamily,
+		font.Href,
 		font.CreatedAt,
 		font.UpdatedAt,
 	)
@@ -40,6 +42,8 @@ func (r repository) Read(fontID int) (*entities.Font, error) {
 		&font.FontID,
 		&font.Name,
 		&font.Description,
+		&font.FontFamily,
+		&font.Href,
 		&font.CreatedAt,
 		&font.UpdatedAt,
 	)
@@ -61,7 +65,14 @@ func (r repository) ReadAll() ([]*entities.Font, error) {
 
 	for rows.Next() {
 		var font entities.Font
-		err := rows.Scan(&font.FontID, &font.Name, &font.Description, &font.UpdatedAt, &font.CreatedAt)
+		err := rows.Scan(
+			&font.FontID,
+			&font.Name,
+			&font.Description,
+			&font.FontFamily,
+			&font.Href,
+			&font.UpdatedAt,
+			&font.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -72,9 +83,11 @@ func (r repository) ReadAll() ([]*entities.Font, error) {
 }
 
 func (r repository) Update(fontID int, font *entities.Font) (bool, error) {
-	res, err := r.db.Exec(`UPDATE font SET name=$1, description=$2, updated_at=$3 WHERE font_id=$4`,
+	res, err := r.db.Exec(`UPDATE font SET name=$1, description=$2, font_family=$3, href=$4, updated_at=$5 WHERE font_id=$6`,
 		font.Name,
 		font.Description,
+		font.FontFamily,
+		font.Href,
 		font.UpdatedAt,
 		fontID,
 	)
@@ -88,9 +101,7 @@ func (r repository) Update(fontID int, font *entities.Font) (bool, error) {
 }
 
 func (r repository) Delete(fontID int) (bool, error) {
-	res, err := r.db.Exec(`DELETE FROM font WHERE font_id=$1`,
-		fontID,
-	)
+	res, err := r.db.Exec(`DELETE FROM font WHERE font_id=$1`, fontID)
 
 	rowsAffected, err := res.RowsAffected()
 	if err != nil {

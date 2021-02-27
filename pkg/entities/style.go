@@ -14,11 +14,13 @@ type Style struct {
 
 // StyleDetail -
 type StyleDetail struct {
-	ProfileID int
-	// Background name
-	Background sql.NullString
-	// Button name
-	Button sql.NullString
-	// Font name
-	Font sql.NullString
+	ProfileID          int
+	BackgroundName     string
+	BackgroundImage    string
+	BackgroundSubImage string
+	ButtonName         string
+	ButtonImage        string
+	FontName           string
+	FontFamily         string
+	FontHref           string
 }

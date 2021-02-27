@@ -62,19 +62,30 @@ func (s service) GetStyle(profileID int) (*models.StyleResponse, error) {
 }
 
 func (s service) GetStyleDetail(username string) (*models.StyleDetail, error) {
-	styleDetail, err := s.repo.ReadStyleDetail(username)
+	stl, err := s.repo.ReadStyleDetail(username)
 	if err != nil {
 		return nil, errors.ErrDatabase(err)
 	}
 
-	res := &models.StyleDetail{
-		ProfileID:  styleDetail.ProfileID,
-		Background: styleDetail.Background.String,
-		Button:     styleDetail.Button.String,
-		Font:       styleDetail.Font.String,
+	res := models.StyleDetail{
+		ProfileID: stl.ProfileID,
+		Background: models.BackgroundStyle{
+			Name:     stl.BackgroundName,
+			Image:    stl.BackgroundImage,
+			SubImage: stl.BackgroundSubImage,
+		},
+		Button: models.ButtonStyle{
+			Name:  stl.ButtonName,
+			Image: stl.ButtonImage,
+		},
+		Font: models.FontStyle{
+			Name:       stl.FontName,
+			FontFamily: stl.FontFamily,
+			Href:       stl.FontHref,
+		},
 	}
 
-	return res, nil
+	return &res, nil
 }
 
 func (s service) UpdateStyle(profileID int, req *models.StyleRequest) error {

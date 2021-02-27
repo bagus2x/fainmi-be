@@ -13,6 +13,7 @@ type Repository interface {
 	ReadByUsernameOrEmail(usernameEmail string) (*entities.Profile, error)
 	ReadCredentials(username string, email string) (*entities.Credentials, error)
 	Update(profileID int, profile *entities.Profile) (bool, error)
+	UpdatePhoto(profileID int, photo string) error
 	Delete(profileID int) (bool, error)
 }
 
@@ -110,6 +111,11 @@ func (r repository) Update(profileID int, profile *entities.Profile) (bool, erro
 	}
 
 	return rowsAffected > 0, nil
+}
+
+func (r repository) UpdatePhoto(profileID int, photo string) error {
+	_, err := r.db.Exec(`UPDATE profile SET photo=$1 WHERE profile_id=$2`, photo, profileID)
+	return err
 }
 
 func (r repository) Delete(profileID int) (bool, error) {

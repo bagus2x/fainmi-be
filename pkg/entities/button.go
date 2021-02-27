@@ -7,6 +7,7 @@ type Button struct {
 	ButtonID    int
 	Name        string
 	Description sql.NullString
+	Image       string
 	CreatedAt   int64
 	UpdatedAt   int64
 }

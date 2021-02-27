@@ -16,6 +16,8 @@ func TestServiceAddFont(t *testing.T) {
 	err := s.AddFont(&models.CreateFontRequest{
 		Name:        "miring",
 		Description: "mirng ke kanan",
+		FontFamily:  "tulisan",
+		Href:        "dnwndwddwdwdwd.dwdnwidw",
 	})
 
 	assert.NoError(t, err)

@@ -29,10 +29,12 @@ func NewService(repo Repository) Service {
 
 func (s service) AddBackground(req *models.CreateBackgroundRequest) error {
 	background := &entities.Background{
-		CreatedAt:   time.Now().Unix(),
-		UpdatedAt:   time.Now().Unix(),
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},
+		Image:       req.Image,
+		SubImage:    sql.NullString{Valid: req.SubImage != "", String: req.SubImage},
+		CreatedAt:   time.Now().Unix(),
+		UpdatedAt:   time.Now().Unix(),
 	}
 	err := s.repo.Create(background)
 	if err != nil {
@@ -52,6 +54,8 @@ func (s service) GetBackground(backgroundID int) (*models.GetBackgroundResponse,
 		BackgroundID: background.BackgroundID,
 		Name:         background.Name,
 		Description:  background.Description.String,
+		Image:        background.Image,
+		SubImage:     background.Description.String,
 		CreatedAt:    background.CreatedAt,
 		UpdatedAt:    background.UpdatedAt,
 	}
@@ -71,6 +75,8 @@ func (s service) GetBackgrounds() (models.GetBackgroundsResponse, error) {
 			BackgroundID: background.BackgroundID,
 			Name:         background.Name,
 			Description:  background.Description.String,
+			Image:        background.Image,
+			SubImage:     background.Description.String,
 			CreatedAt:    background.CreatedAt,
 			UpdatedAt:    background.UpdatedAt,
 		}
@@ -84,8 +90,11 @@ func (s service) UpdateBackground(backgroundID int, req *models.UpdateBackground
 	background := &entities.Background{
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},
+		Image:       req.Image,
+		SubImage:    sql.NullString{Valid: req.SubImage != "", String: req.SubImage},
 		UpdatedAt:   time.Now().Unix(),
 	}
+
 	updated, err := s.repo.Update(backgroundID, background)
 	if err != nil {
 		return errors.ErrDatabase(err)

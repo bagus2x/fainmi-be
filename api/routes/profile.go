@@ -1,6 +1,11 @@
 package routes
 
 import (
+	"fmt"
+	"path"
+	"path/filepath"
+	"time"
+
 	"github.com/bagus2x/fainmi-be/api/middleware"
 	"github.com/bagus2x/fainmi-be/pkg/models"
 	"github.com/bagus2x/fainmi-be/pkg/profile"
@@ -15,6 +20,7 @@ func Profile(app fiber.Router, service profile.Service, auth middleware.Authenti
 	v1.Post("/signup", signUp(service))
 	v1.Get("/", auth.Auth, getProfile(service))
 	v1.Put("/update", auth.Auth, updateProfile(service))
+	v1.Patch("/photo", auth.Auth, updatePhotoProfile(service))
 	v1.Delete("/delete", auth.Auth, deleteProfile(service))
 }
 
@@ -106,6 +112,35 @@ func updateProfile(service profile.Service) fiber.Handler {
 		return c.JSON(r{
 			Success: true,
 			Data:    res,
+		})
+	}
+}
+
+func updatePhotoProfile(service profile.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		file, err := c.FormFile("photo")
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		profileID := c.Locals("profile_id").(int)
+
+		fileName := fmt.Sprintf("%d-%d%s", profileID, time.Now().Unix(), filepath.Ext(file.Filename))
+		dest := path.Join("public", "photo", fileName)
+		err = c.SaveFile(file, fmt.Sprintf("./%s", dest))
+		if err != nil {
+			return c.Status(code(err)).JSON(r{
+				Message: err.Error(),
+			})
+		}
+
+		service.UpdatePhoto(profileID, dest)
+
+		return c.JSON(r{
+			Success: true,
+			Data:    dest,
 		})
 	}
 }

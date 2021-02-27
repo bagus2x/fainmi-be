@@ -25,9 +25,10 @@ func NewRepo(db *sql.DB) Repository {
 }
 
 func (r repository) Create(button *entities.Button) error {
-	_, err := r.db.Exec(`INSERT INTO button VALUES(DEFAULT, $1, $2, $3, $4)`,
+	_, err := r.db.Exec(`INSERT INTO button VALUES(DEFAULT, $1, $2, $3, $4, $5)`,
 		button.Name,
 		button.Description,
+		button.Image,
 		button.CreatedAt,
 		button.UpdatedAt,
 	)
@@ -40,6 +41,7 @@ func (r repository) Read(buttonID int) (*entities.Button, error) {
 		&button.ButtonID,
 		&button.Name,
 		&button.Description,
+		&button.Image,
 		&button.CreatedAt,
 		&button.UpdatedAt,
 	)
@@ -61,10 +63,17 @@ func (r repository) ReadAll() ([]*entities.Button, error) {
 
 	for rows.Next() {
 		var btn entities.Button
-		err := rows.Scan(&btn.ButtonID, &btn.Name, &btn.Description, &btn.UpdatedAt, &btn.CreatedAt)
+		err := rows.Scan(
+			&btn.ButtonID,
+			&btn.Name,
+			&btn.Description,
+			&btn.Image,
+			&btn.UpdatedAt,
+			&btn.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
+
 		buttons = append(buttons, &btn)
 	}
 

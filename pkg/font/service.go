@@ -33,6 +33,8 @@ func (s service) AddFont(req *models.CreateFontRequest) error {
 		UpdatedAt:   time.Now().Unix(),
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},
+		FontFamily:  req.FontFamily,
+		Href:        req.Href,
 	}
 	err := s.repo.Create(font)
 	if err != nil {
@@ -52,6 +54,8 @@ func (s service) GetFont(fontID int) (*models.GetFontResponse, error) {
 		FontID:      font.FontID,
 		Name:        font.Name,
 		Description: font.Description.String,
+		FontFamily:  font.FontFamily,
+		Href:        font.Href,
 		CreatedAt:   font.CreatedAt,
 		UpdatedAt:   font.UpdatedAt,
 	}
@@ -71,6 +75,8 @@ func (s service) GetFonts() (models.GetFontsResponse, error) {
 			FontID:      font.FontID,
 			Name:        font.Name,
 			Description: font.Description.String,
+			FontFamily:  font.FontFamily,
+			Href:        font.Href,
 			CreatedAt:   font.CreatedAt,
 			UpdatedAt:   font.UpdatedAt,
 		}
@@ -84,6 +90,8 @@ func (s service) UpdateFont(fontID int, req *models.UpdateFontRequest) error {
 	font := &entities.Font{
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Name != "", String: req.Name},
+		FontFamily:  req.FontFamily,
+		Href:        req.Href,
 		UpdatedAt:   time.Now().Unix(),
 	}
 	updated, err := s.repo.Update(fontID, font)

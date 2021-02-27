@@ -29,10 +29,11 @@ func NewService(repo Repository) Service {
 
 func (s service) AddButton(req *models.CreateButtonRequest) error {
 	button := &entities.Button{
-		CreatedAt:   time.Now().Unix(),
-		UpdatedAt:   time.Now().Unix(),
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Description != "", String: req.Description},
+		Image:       req.Image,
+		CreatedAt:   time.Now().Unix(),
+		UpdatedAt:   time.Now().Unix(),
 	}
 	err := s.repo.Create(button)
 	if err != nil {
@@ -52,6 +53,7 @@ func (s service) GetButton(buttonID int) (*models.GetButtonResponse, error) {
 		ButtonID:    button.ButtonID,
 		Name:        button.Name,
 		Description: button.Description.String,
+		Image:       button.Image,
 		CreatedAt:   button.CreatedAt,
 		UpdatedAt:   button.UpdatedAt,
 	}
@@ -71,6 +73,7 @@ func (s service) GetButtons() (models.GetButtonsResponse, error) {
 			ButtonID:    button.ButtonID,
 			Name:        button.Name,
 			Description: button.Description.String,
+			Image:       button.Image,
 			CreatedAt:   button.CreatedAt,
 			UpdatedAt:   button.UpdatedAt,
 		}
@@ -84,6 +87,7 @@ func (s service) UpdateButton(buttonID int, req *models.UpdateButtonRequest) err
 	button := &entities.Button{
 		Name:        req.Name,
 		Description: sql.NullString{Valid: req.Name != "", String: req.Name},
+		Image:       req.Image,
 		UpdatedAt:   time.Now().Unix(),
 	}
 	updated, err := s.repo.Update(buttonID, button)

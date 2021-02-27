@@ -15,13 +15,30 @@ type StyleResponse struct {
 	FontID       int `json:"font_id"`
 }
 
+// BackgroundStyle -
+type BackgroundStyle struct {
+	Name     string `json:"name"`
+	Image    string `json:"image"`
+	SubImage string `json:"subImage"`
+}
+
+// ButtonStyle -
+type ButtonStyle struct {
+	Name  string `json:"name"`
+	Image string `json:"image"`
+}
+
+// FontStyle -
+type FontStyle struct {
+	Name       string `json:"name"`
+	FontFamily string `json:"fontFamily"`
+	Href       string `json:"href"`
+}
+
 // StyleDetail -
 type StyleDetail struct {
-	ProfileID int
-	// Background name
-	Background string
-	// Button name
-	Button string
-	// Font name
-	Font string
+	ProfileID  int             `json:"profileID"`
+	Background BackgroundStyle `json:"background"`
+	Button     ButtonStyle     `json:"button"`
+	Font       FontStyle       `json:"font"`
 }
