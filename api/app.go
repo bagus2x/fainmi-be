@@ -18,17 +18,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/joho/godotenv"
+	"github.com/gofiber/fiber/v2/middleware/recover""
 )
 
 func main() {
-	// Load Environment variable
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// Environment variable
 	port := os.Getenv("PORT")
 	databaseURI := os.Getenv("DATABASE_URI")
